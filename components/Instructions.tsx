@@ -4,12 +4,12 @@ const steps = [
     text: "Type a purpose and click Generate pixel. The purpose is just a label so you can recognize it later.",
   },
   {
-    title: "Copy the URL or the img code",
-    text: "Use the code button to switch between the tracking URL and the 1x1 img tag. The copy button copies whatever is shown.",
+    title: "Copy the pixel",
+    text: "Click Copy to copy the 1x1 image — the code is handled for you, so no HTML editing is needed. Use the code button to switch to the plain URL instead.",
   },
   {
-    title: "Add it to your email",
-    text: "In Gmail, paste the img code into the HTML source of your message. In other email tools, add the URL as an image link.",
+    title: "Paste it into your email",
+    text: "Paste the pixel directly into your email message. In Gmail, just paste it into the compose box. In other email tools, you can also add the URL as an image link.",
   },
   {
     title: "Send the email",
