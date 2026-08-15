@@ -5,19 +5,31 @@ import { Check, Code2, Copy } from "lucide-react";
 import { pixelImgTag } from "@/lib/pixel";
 
 export default function PixelResult({ url }: { url: string }) {
-  const boxRef = useRef<HTMLButtonElement>(null);
+  const copySourceRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"url" | "code">("code");
   const [copied, setCopied] = useState(false);
-  const [copiedPixel, setCopiedPixel] = useState(false);
 
   const value = mode === "url" ? url : pixelImgTag(url);
 
+  async function copy() {
+    if (mode === "code") {
+      try {
+        await writePixelToClipboard();
+      } catch {
+        selectAndCopySource();
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
+
   async function writePixelToClipboard() {
-    const html = pixelImgTag(url);
     if (navigator.clipboard?.write) {
       await navigator.clipboard.write([
         new ClipboardItem({
-          "text/html": new Blob([html], { type: "text/html" }),
+          "text/html": new Blob([pixelImgTag(url)], { type: "text/html" }),
           "text/plain": new Blob([url], { type: "text/plain" }),
         }),
       ]);
@@ -26,38 +38,21 @@ export default function PixelResult({ url }: { url: string }) {
     }
   }
 
-  async function copyPixel() {
-    try {
-      await writePixelToClipboard();
-    } catch {
-      // Fallback: select the box contents and copy them.
-      const box = boxRef.current;
-      if (box) {
-        const range = document.createRange();
-        range.selectNodeContents(box);
-        const selection = window.getSelection();
-        selection?.removeAllRanges();
-        selection?.addRange(range);
-        document.execCommand("copy");
-        selection?.removeAllRanges();
-      }
+  function selectAndCopySource() {
+    const el = copySourceRef.current;
+    if (el) {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      document.execCommand("copy");
+      selection?.removeAllRanges();
     }
-    setCopiedPixel(true);
-    setTimeout(() => setCopiedPixel(false), 1500);
-  }
-
-  async function copy() {
-    if (mode === "code") {
-      await copyPixel();
-    } else {
-      await navigator.clipboard.writeText(url);
-    }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
   }
 
   return (
-    <div>
+    <div className="relative">
       <p className="text-sm text-neutral-500">
         {mode === "url"
           ? "Copy the URL to use in an image tag in your email."
@@ -98,31 +93,14 @@ export default function PixelResult({ url }: { url: string }) {
           )}
         </button>
       </div>
-      <button
-        type="button"
-        ref={boxRef}
-        onClick={copyPixel}
-        title="Click to copy the pixel"
-        className={`mt-3 block w-full cursor-pointer select-all rounded-md border border-dashed px-3 py-2 text-left transition-colors ${
-          copiedPixel
-            ? "border-green-500 bg-green-50"
-            : "border-neutral-300 bg-neutral-50 hover:border-indigo-400"
-        }`}
+      <div
+        ref={copySourceRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute opacity-0"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element -- must use a raw img so the real tracking URL is used and can be copied */}
-        <img
-          src={url}
-          alt=""
-          width={1}
-          height={1}
-          title="Tracking pixel (invisible)"
-        />
-      </button>
-      <p className="mt-1 select-none text-xs text-neutral-500">
-        {copiedPixel
-          ? "Copied. Paste it into your email."
-          : "Click the box to copy the pixel, then paste it into your email."}
-      </p>
+        {/* eslint-disable-next-line @next/next/no-img-element -- selectable source element used by the copy fallback */}
+        <img src={url} alt="" width={1} height={1} />
+      </div>
     </div>
   );
 }
