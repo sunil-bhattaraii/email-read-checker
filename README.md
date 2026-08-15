@@ -1,4 +1,4 @@
-# Email Read Checker
+# ReadMail
 
 Track when your emails are opened using an invisible 1x1 tracking pixel.
 

@@ -14,7 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ReadMail",
+  metadataBase: new URL(process.env.APP_URL ?? "http://localhost:3000"),
+  title: {
+    default: "ReadMail",
+    template: "%s | ReadMail",
+  },
   description:
     "Track when your emails are opened with an invisible tracking pixel.",
   manifest: "/assets/favicons/site.webmanifest",
@@ -33,6 +37,29 @@ export const metadata: Metadata = {
       },
     ],
     apple: [{ url: "/assets/favicons/apple-touch-icon.png" }],
+  },
+  openGraph: {
+    title: "ReadMail",
+    description:
+      "Track when your emails are opened with an invisible tracking pixel.",
+    siteName: "ReadMail",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/assets/readmail-logo.png",
+        width: 400,
+        height: 400,
+        alt: "ReadMail logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "ReadMail",
+    description:
+      "Track when your emails are opened with an invisible tracking pixel.",
+    images: ["/assets/readmail-logo.png"],
   },
 };
 
