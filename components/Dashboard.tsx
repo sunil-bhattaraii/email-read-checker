@@ -159,6 +159,21 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
     }
   }
 
+  async function handleReset(pixelId: string) {
+    const reset = (prev: Pixel[]) =>
+      prev.map((p) =>
+        p.pixelId === pixelId ? { ...p, opens: 0, lastOpenedAt: null } : p
+      );
+    if (!user) {
+      setPixels(reset);
+      return;
+    }
+    const res = await fetch(`/api/pixels/${pixelId}`, { method: "PATCH" });
+    if (res.ok) {
+      setPixels(reset);
+    }
+  }
+
   async function refresh() {
     if (!user) {
       setPixels(await mergeOpens(loadGuestPixels()));
@@ -212,6 +227,7 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
         loading={loading}
         onRefresh={refresh}
         onDelete={handleDelete}
+        onReset={handleReset}
       />
       <Instructions />
     </main>

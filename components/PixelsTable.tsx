@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ChevronDown, Copy, RefreshCw, Trash2 } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Copy,
+  RefreshCw,
+  RotateCcw,
+  Trash2,
+} from "lucide-react";
 import type { Pixel } from "@/lib/types";
 import PixelResult from "@/components/PixelResult";
 
@@ -19,14 +26,17 @@ export default function PixelsTable({
   loading,
   onRefresh,
   onDelete,
+  onReset,
 }: {
   pixels: Pixel[];
   loading: boolean;
   onRefresh: () => void;
   onDelete: (pixelId: string) => void;
+  onReset: (pixelId: string) => void;
 }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [resetTarget, setResetTarget] = useState<Pixel | null>(null);
 
   async function copyUrl(pixelId: string) {
     await navigator.clipboard.writeText(pixelUrl(pixelId));
@@ -36,6 +46,12 @@ export default function PixelsTable({
 
   function toggleRow(pixelId: string) {
     setExpandedId((cur) => (cur === pixelId ? null : pixelId));
+  }
+
+  function confirmReset() {
+    if (!resetTarget) return;
+    onReset(resetTarget.pixelId);
+    setResetTarget(null);
   }
 
   return (
@@ -84,11 +100,42 @@ export default function PixelsTable({
                     onCopyUrl={copyUrl}
                     onToggle={toggleRow}
                     onDelete={onDelete}
+                    onResetRequest={(pixel) => setResetTarget(pixel)}
                   />
                 );
               })}
             </tbody>
           </table>
+        </div>
+      )}
+      {resetTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 p-4">
+          <div className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-6 shadow-xl">
+            <h3 className="text-base font-semibold text-neutral-900">
+              Reset opens?
+            </h3>
+            <p className="mt-1 text-sm text-neutral-600">
+              This resets the open count for{" "}
+              <span className="font-medium text-neutral-900">
+                {resetTarget.purpose}
+              </span>{" "}
+              to 0 and clears the last opened time. This cannot be undone.
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                onClick={() => setResetTarget(null)}
+                className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmReset}
+                className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>
@@ -102,6 +149,7 @@ function FragmentRow({
   onCopyUrl,
   onToggle,
   onDelete,
+  onResetRequest,
 }: {
   pixel: Pixel;
   expanded: boolean;
@@ -109,6 +157,7 @@ function FragmentRow({
   onCopyUrl: (pixelId: string) => void;
   onToggle: (pixelId: string) => void;
   onDelete: (pixelId: string) => void;
+  onResetRequest: (pixel: Pixel) => void;
 }) {
   return (
     <>
@@ -153,6 +202,16 @@ function FragmentRow({
           {formatDate(pixel.lastOpenedAt)}
         </td>
         <td className="px-6 py-3 text-right">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onResetRequest(pixel);
+            }}
+            title="Reset opens"
+            className="rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-amber-50 hover:text-amber-600"
+          >
+            <RotateCcw className="h-4 w-4" />
+          </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
