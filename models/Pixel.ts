@@ -6,10 +6,10 @@ const PixelSchema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      default: null,
       index: true,
     },
-    purpose: { type: String, required: true, trim: true },
+    purpose: { type: String, default: "", trim: true },
     opens: { type: Number, default: 0 },
     lastOpenedAt: { type: Date, default: null },
   },

@@ -1,17 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
-import type { Pixel } from "@/lib/types";
+import { LogIn, LogOut } from "lucide-react";
+import type { Pixel, SessionUser } from "@/lib/types";
+import {
+  clearGuestPixels,
+  genPixelId,
+  loadGuestPixels,
+  pixelUrl,
+  saveGuestPixels,
+} from "@/lib/guest";
 import GeneratePanel from "@/components/GeneratePanel";
 import PixelsTable from "@/components/PixelsTable";
 import Instructions from "@/components/Instructions";
 
-export default function Dashboard({ username }: { username: string }) {
+export default function Dashboard({ user }: { user: SessionUser | null }) {
   const router = useRouter();
-  const [pixels, setPixels] = useState<Pixel[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [pixels, setPixels] = useState<Pixel[]>(() =>
+    user ? [] : loadGuestPixels()
+  );
+  const [loading, setLoading] = useState(Boolean(user));
 
   const fetchPixels = useCallback(async (): Promise<Pixel[]> => {
     const res = await fetch("/api/pixels");
@@ -21,30 +31,48 @@ export default function Dashboard({ username }: { username: string }) {
   }, []);
 
   useEffect(() => {
+    if (!user) {
+      saveGuestPixels(pixels);
+      return;
+    }
+  }, [user, pixels]);
+
+  useEffect(() => {
+    if (!user) return;
     let cancelled = false;
-    fetchPixels()
-      .then((list) => {
+    (async () => {
+      const guest = loadGuestPixels();
+      if (guest.length) {
+        try {
+          const res = await fetch("/api/pixels/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              pixels: guest.map((p) => ({
+                pixelId: p.pixelId,
+                purpose: p.purpose,
+              })),
+            }),
+          });
+          if (res.ok) clearGuestPixels();
+        } catch {
+          // Keep guest pixels for the next sync attempt.
+        }
+      }
+      if (cancelled) return;
+      try {
+        const list = await fetchPixels();
         if (!cancelled) setPixels(list);
-      })
-      .catch(() => {})
-      .finally(() => {
+      } catch {
+        // Keep the empty list on failure.
+      } finally {
         if (!cancelled) setLoading(false);
-      });
+      }
+    })();
     return () => {
       cancelled = true;
     };
-  }, [fetchPixels]);
-
-  async function refresh() {
-    setLoading(true);
-    try {
-      setPixels(await fetchPixels());
-    } catch {
-      // Keep the previous list on failure.
-    } finally {
-      setLoading(false);
-    }
-  }
+  }, [user, fetchPixels]);
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -52,14 +80,56 @@ export default function Dashboard({ username }: { username: string }) {
     router.refresh();
   }
 
-  function handleCreated(pixel: Pixel) {
+  async function createPixel(
+    purpose: string
+  ): Promise<{ pixel: Pixel; url: string }> {
+    if (user) {
+      const res = await fetch("/api/pixels", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ purpose }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error ?? "Failed to generate pixel.");
+      }
+      setPixels((prev) => [data.pixel, ...prev]);
+      return { pixel: data.pixel, url: data.url };
+    }
+    const pixel: Pixel = {
+      pixelId: genPixelId(),
+      purpose,
+      opens: 0,
+      lastOpenedAt: null,
+      createdAt: new Date().toISOString(),
+    };
     setPixels((prev) => [pixel, ...prev]);
+    return { pixel, url: pixelUrl(pixel.pixelId) };
   }
 
   async function handleDelete(pixelId: string) {
+    if (!user) {
+      setPixels((prev) => prev.filter((p) => p.pixelId !== pixelId));
+      return;
+    }
     const res = await fetch(`/api/pixels/${pixelId}`, { method: "DELETE" });
     if (res.ok) {
       setPixels((prev) => prev.filter((p) => p.pixelId !== pixelId));
+    }
+  }
+
+  async function refresh() {
+    if (!user) {
+      setPixels(loadGuestPixels());
+      return;
+    }
+    setLoading(true);
+    try {
+      setPixels(await fetchPixels());
+    } catch {
+      // Keep the previous list on failure.
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -71,19 +141,31 @@ export default function Dashboard({ username }: { username: string }) {
             Email Read Checker
           </h1>
           <p className="mt-0.5 text-sm text-neutral-500">
-            Signed in as {username}
+            {user
+              ? `Signed in as ${user.username}`
+              : "Pixels are saved in this browser until you sign in."}
           </p>
         </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
-        >
-          <LogOut className="h-4 w-4" />
-          Sign out
-        </button>
+        {user ? (
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign out
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            className="flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+          >
+            <LogIn className="h-4 w-4" />
+            Sign in
+          </Link>
+        )}
       </header>
 
-      <GeneratePanel onCreated={handleCreated} />
+      <GeneratePanel createPixel={createPixel} />
       <PixelsTable
         pixels={pixels}
         loading={loading}

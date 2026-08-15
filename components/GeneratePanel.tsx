@@ -6,9 +6,11 @@ import type { Pixel } from "@/lib/types";
 import PixelResult from "@/components/PixelResult";
 
 export default function GeneratePanel({
-  onCreated,
+  createPixel,
 }: {
-  onCreated: (pixel: Pixel) => void;
+  createPixel: (
+    purpose: string
+  ) => Promise<{ pixel: Pixel; url: string }>;
 }) {
   const [purpose, setPurpose] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -24,19 +26,9 @@ export default function GeneratePanel({
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/pixels", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ purpose: purpose.trim() }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Failed to generate pixel.");
-        return;
-      }
-      setResult({ url: data.url });
+      const { url } = await createPixel(purpose.trim());
+      setResult({ url });
       setPurpose("");
-      onCreated(data.pixel);
     } catch {
       setError("Failed to generate pixel.");
     } finally {

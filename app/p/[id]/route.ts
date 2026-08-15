@@ -15,7 +15,12 @@ export async function GET(
     await connectDB();
     await Pixel.findOneAndUpdate(
       { pixelId: id },
-      { $inc: { opens: 1 }, $set: { lastOpenedAt: new Date() } }
+      {
+        $inc: { opens: 1 },
+        $set: { lastOpenedAt: new Date() },
+        $setOnInsert: { purpose: "" },
+      },
+      { upsert: true }
     ).exec();
   } catch {
     // Never fail the image load even if tracking is down.
