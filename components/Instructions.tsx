@@ -13,7 +13,7 @@ const steps = [
   },
   {
     title: "Send the email",
-    text: "Each time a recipient opens the email and images load, the open count for that pixel goes up and the last opened time updates.",
+    text: "Every time the email is opened and images load, the open count goes up and the last opened time updates. Opening the same email more than once adds another open.",
   },
 ];
 
@@ -42,10 +42,13 @@ export default function Instructions() {
         ))}
       </ol>
       <p className="mt-3 text-xs text-neutral-500">
-        Opens are only counted when images load. Some email clients block
-        images by default. Loads from your own browser are not counted, so
-        previewing a pixel does not inflate the count. To test a pixel, open
-        its URL in a different browser or in an incognito window.
+        Opens are counted every time the image loads, so the same recipient
+        opening an email multiple times counts multiple opens, and viewing your
+        own message also counts as an open, because email clients load images
+        without your session cookie. Only a direct preview of the tracking URL
+        from your own signed-in browser is skipped. Some email clients block
+        images by default. To test a pixel, open its URL in a different browser
+        or in an incognito window.
       </p>
     </section>
   );
