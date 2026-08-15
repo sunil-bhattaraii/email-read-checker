@@ -1,8 +1,19 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/auth";
 import LoginForm from "@/components/LoginForm";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Sign in",
+  description:
+    "Sign in to ReadMail with your username. New usernames are created on first sign in.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function LoginPage() {
   const user = await getSessionUser();

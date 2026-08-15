@@ -21,7 +21,19 @@ export const metadata: Metadata = {
   },
   description:
     "Track when your emails are opened with an invisible tracking pixel.",
+  applicationName: "ReadMail",
   manifest: "/assets/favicons/site.webmanifest",
+  themeColor: "#4f46e5",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/assets/favicons/favicon.ico", sizes: "any" },
@@ -64,6 +76,15 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  const siteUrl = process.env.APP_URL ?? "http://localhost:3000";
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "ReadMail",
+    url: siteUrl,
+    description:
+      "Track when your emails are opened with an invisible tracking pixel.",
+  };
   return (
     <html
       lang="en"
@@ -72,6 +93,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col bg-neutral-50 text-neutral-900">
         {children}
         <Footer />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </body>
     </html>
   );
