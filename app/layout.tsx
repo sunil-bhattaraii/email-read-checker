@@ -1,7 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Footer from "@/components/Footer";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#4f46e5",
+};
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,7 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(
+    process.env.APP_URL ?? "https://readmail.sunil-bhattarai.com.np"
+  ),
   title: {
     default: "ReadMail",
     template: "%s | ReadMail",
@@ -23,7 +29,6 @@ export const metadata: Metadata = {
     "Track when your emails are opened with an invisible tracking pixel.",
   applicationName: "ReadMail",
   manifest: "/assets/favicons/site.webmanifest",
-  themeColor: "#4f46e5",
   robots: {
     index: true,
     follow: true,
@@ -76,7 +81,8 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  const siteUrl = process.env.APP_URL ?? "http://localhost:3000";
+  const siteUrl =
+    process.env.APP_URL ?? "https://readmail.sunil-bhattarai.com.np";
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",

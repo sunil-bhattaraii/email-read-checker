@@ -89,5 +89,6 @@ npm run build
 npm run start
 ```
 
-For a real deployment, set `APP_URL` to the public URL of the app and generate
-a fresh `JWT_SECRET`.
+For a real deployment, set `APP_URL` to the public URL of the app, for
+example `https://readmail.sunil-bhattarai.com.np`, and generate a fresh
+`JWT_SECRET`.

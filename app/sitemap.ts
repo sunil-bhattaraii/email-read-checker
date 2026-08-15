@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = process.env.APP_URL ?? "http://localhost:3000";
+const siteUrl =
+  process.env.APP_URL ?? "https://readmail.sunil-bhattarai.com.np";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
