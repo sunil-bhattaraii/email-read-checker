@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, KeyRound, Loader2, LogIn } from "lucide-react";
 
@@ -87,9 +88,16 @@ export default function LoginForm() {
   return (
     <div className="w-full max-w-sm">
       <div className="rounded-xl border border-neutral-200 bg-white p-8 shadow-sm">
-        <h1 className="text-lg font-semibold text-neutral-900">
-          Email Read Checker
-        </h1>
+        <div className="flex items-center gap-2">
+          <Image
+            src="/assets/readmail-logo.png"
+            alt="ReadMail logo"
+            width={32}
+            height={32}
+            className="h-8 w-8"
+          />
+          <h1 className="text-lg font-semibold text-neutral-900">ReadMail</h1>
+        </div>
         <p className="mt-1 text-sm text-neutral-500">
           Sign in with your username. New usernames are created on first sign
           in.

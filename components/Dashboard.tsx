@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LogIn, LogOut } from "lucide-react";
@@ -193,9 +194,16 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-10">
       <header className="mb-10 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-neutral-900">
-            Email Read Checker
-          </h1>
+          <div className="flex items-center gap-2">
+            <Image
+              src="/assets/readmail-logo.png"
+              alt="ReadMail logo"
+              width={32}
+              height={32}
+              className="h-8 w-8"
+            />
+            <h1 className="text-xl font-semibold text-neutral-900">ReadMail</h1>
+          </div>
           <p className="mt-0.5 text-sm text-neutral-500">
             {user
               ? `Signed in as ${user.username}`
