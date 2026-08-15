@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { incrementVisitCount } from "@/lib/visitCount";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,7 +19,8 @@ export const metadata: Metadata = {
   description: "Track when your emails are opened with an invisible tracking pixel.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const visits = await incrementVisitCount();
   return (
     <html
       lang="en"
@@ -25,6 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col bg-neutral-50 text-neutral-900">
         {children}
+        <Footer visits={visits} />
       </body>
     </html>
   );
