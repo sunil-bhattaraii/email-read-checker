@@ -13,13 +13,19 @@ declare global {
 
 const cached = globalThis.__mongooseCache ?? { conn: null, promise: null };
 
-export async function connectDB(): Promise<typeof mongoose> {
+export async function connectDB(opts?: { timeoutMS?: number }): Promise<typeof mongoose> {
   if (cached.conn) return cached.conn;
   if (!cached.promise) {
+    const timeoutMS = opts?.timeoutMS ?? 5000;
     cached.promise = mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 3000,
+      serverSelectionTimeoutMS: timeoutMS,
     });
   }
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (err) {
+    cached.promise = null;
+    throw err;
+  }
   return cached.conn;
 }

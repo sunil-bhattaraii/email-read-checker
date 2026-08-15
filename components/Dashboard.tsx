@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { LogIn, LogOut } from "lucide-react";
 import type { Pixel, SessionUser } from "@/lib/types";
 import {
+  addGuestOwnedPixel,
   clearGuestPixels,
   genPixelId,
   loadGuestPixels,
@@ -30,12 +31,51 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
     return data.pixels ?? [];
   }, []);
 
+  const mergeOpens = useCallback(async (list: Pixel[]): Promise<Pixel[]> => {
+    const ids = list.map((p) => p.pixelId);
+    if (!ids.length) return list;
+    try {
+      const res = await fetch(
+        `/api/pixels/opens?ids=${encodeURIComponent(ids.join(","))}`
+      );
+      if (!res.ok) return list;
+      const data = await res.json();
+      const remote: {
+        pixelId: string;
+        opens: number;
+        lastOpenedAt: string | null;
+      }[] = data.pixels ?? [];
+      const byId = new Map(remote.map((p) => [p.pixelId, p] as const));
+      return list.map((p) => {
+        const s = byId.get(p.pixelId);
+        return s
+          ? { ...p, opens: s.opens, lastOpenedAt: s.lastOpenedAt }
+          : p;
+      });
+    } catch {
+      return list;
+    }
+  }, []);
+
   useEffect(() => {
     if (!user) {
       saveGuestPixels(pixels);
       return;
     }
   }, [user, pixels]);
+
+  useEffect(() => {
+    if (user) return;
+    let cancelled = false;
+    (async () => {
+      const base = loadGuestPixels();
+      const merged = await mergeOpens(base);
+      if (!cancelled && merged.length) setPixels(merged);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user, mergeOpens]);
 
   useEffect(() => {
     if (!user) return;
@@ -103,6 +143,7 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
       lastOpenedAt: null,
       createdAt: new Date().toISOString(),
     };
+    addGuestOwnedPixel(pixel.pixelId);
     setPixels((prev) => [pixel, ...prev]);
     return { pixel, url: pixelUrl(pixel.pixelId) };
   }
@@ -120,7 +161,7 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
 
   async function refresh() {
     if (!user) {
-      setPixels(loadGuestPixels());
+      setPixels(await mergeOpens(loadGuestPixels()));
       return;
     }
     setLoading(true);
