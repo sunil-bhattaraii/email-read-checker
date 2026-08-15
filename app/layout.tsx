@@ -14,8 +14,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Email Read Checker",
-  description: "Track when your emails are opened with an invisible tracking pixel.",
+  title: "ReadMail",
+  description:
+    "Track when your emails are opened with an invisible tracking pixel.",
+  manifest: "/assets/favicons/site.webmanifest",
+  icons: {
+    icon: [
+      { url: "/assets/favicons/favicon.ico", sizes: "any" },
+      {
+        url: "/assets/favicons/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        url: "/assets/favicons/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+    ],
+    apple: [{ url: "/assets/favicons/apple-touch-icon.png" }],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
