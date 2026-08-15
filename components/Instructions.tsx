@@ -42,8 +42,10 @@ export default function Instructions() {
         ))}
       </ol>
       <p className="mt-3 text-xs text-neutral-500">
-        Some email clients block images by default. Opens are only counted when
-        images load. The tracking image is 1x1 and invisible to the reader.
+        Opens are only counted when images load. Some email clients block
+        images by default. Loads from your own browser are not counted, so
+        previewing a pixel does not inflate the count. To test a pixel, open
+        its URL in a different browser or in an incognito window.
       </p>
     </section>
   );
