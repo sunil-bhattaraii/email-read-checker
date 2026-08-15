@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Check, Code2, Copy } from "lucide-react";
 import { pixelImgTag } from "@/lib/pixel";
 
 export default function PixelResult({ url }: { url: string }) {
+  const boxRef = useRef<HTMLButtonElement>(null);
   const [mode, setMode] = useState<"url" | "code">("url");
   const [copied, setCopied] = useState(false);
+  const [copiedPixel, setCopiedPixel] = useState(false);
 
   const value = mode === "url" ? url : pixelImgTag(url);
 
@@ -14,6 +16,36 @@ export default function PixelResult({ url }: { url: string }) {
     await navigator.clipboard.writeText(value);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  }
+
+  async function copyPixel() {
+    const html = pixelImgTag(url);
+    try {
+      if (navigator.clipboard?.write) {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            "text/html": new Blob([html], { type: "text/html" }),
+            "text/plain": new Blob([url], { type: "text/plain" }),
+          }),
+        ]);
+      } else {
+        throw new Error("unsupported");
+      }
+    } catch {
+      // Fallback: select the box contents and copy them.
+      const box = boxRef.current;
+      if (box) {
+        const range = document.createRange();
+        range.selectNodeContents(box);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        document.execCommand("copy");
+        selection?.removeAllRanges();
+      }
+    }
+    setCopiedPixel(true);
+    setTimeout(() => setCopiedPixel(false), 1500);
   }
 
   return (
@@ -58,7 +90,17 @@ export default function PixelResult({ url }: { url: string }) {
           )}
         </button>
       </div>
-      <div className="mt-3 select-all rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-3 py-2">
+      <button
+        type="button"
+        ref={boxRef}
+        onClick={copyPixel}
+        title="Click to copy the pixel"
+        className={`mt-3 block w-full cursor-pointer select-all rounded-md border border-dashed px-3 py-2 text-left transition-colors ${
+          copiedPixel
+            ? "border-green-500 bg-green-50"
+            : "border-neutral-300 bg-neutral-50 hover:border-indigo-400"
+        }`}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element -- must use a raw img so the real tracking URL is used and can be copied */}
         <img
           src={url}
@@ -67,9 +109,11 @@ export default function PixelResult({ url }: { url: string }) {
           height={1}
           title="Tracking pixel (invisible)"
         />
-      </div>
+      </button>
       <p className="mt-1 select-none text-xs text-neutral-500">
-        Select the box above and copy it, then paste it into your email.
+        {copiedPixel
+          ? "Copied. Paste it into your email."
+          : "Click the box to copy the pixel, then paste it into your email."}
       </p>
     </div>
   );
