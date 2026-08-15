@@ -5,7 +5,7 @@ const steps = [
   },
   {
     title: "Copy the pixel",
-    text: "Click Copy to copy the 1x1 image — the code is handled for you, so no HTML editing is needed. Use the code button to switch to the plain URL instead.",
+    text: "Click Copy to copy the 1x1 image, the code is handled for you, so no HTML editing is needed. Use the code button to switch to the plain URL instead.",
   },
   {
     title: "Paste it into your email",
