@@ -2,15 +2,62 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Loader2, LogIn } from "lucide-react";
+import { Eye, EyeOff, KeyRound, Loader2, LogIn } from "lucide-react";
+
+const SAVED_CREDENTIALS_KEY = "erc_saved_credentials";
+
+type SavedCredentials = { username: string; password: string };
+
+function loadSavedCredentials(): SavedCredentials | null {
+  try {
+    const raw = window.localStorage.getItem(SAVED_CREDENTIALS_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (
+      parsed &&
+      typeof parsed.username === "string" &&
+      typeof parsed.password === "string"
+    ) {
+      return { username: parsed.username, password: parsed.password };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 export default function LoginForm() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+  const [saved, setSaved] = useState<SavedCredentials | null>(() =>
+    loadSavedCredentials()
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  function persistCredentials() {
+    if (rememberMe) {
+      window.localStorage.setItem(
+        SAVED_CREDENTIALS_KEY,
+        JSON.stringify({ username: username.trim(), password })
+      );
+      setSaved({ username: username.trim(), password });
+    } else {
+      window.localStorage.removeItem(SAVED_CREDENTIALS_KEY);
+      setSaved(null);
+    }
+  }
+
+  function useSaved() {
+    if (!saved) return;
+    setUsername(saved.username);
+    setPassword(saved.password);
+    setRememberMe(true);
+    setSaved(null);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,6 +74,7 @@ export default function LoginForm() {
         setError(data.error ?? "Something went wrong.");
         return;
       }
+      persistCredentials();
       router.push("/");
       router.refresh();
     } catch {
@@ -47,6 +95,16 @@ export default function LoginForm() {
           in.
         </p>
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          {saved && (
+            <button
+              type="button"
+              onClick={useSaved}
+              className="flex w-full items-center justify-center gap-1.5 rounded-md border border-neutral-300 bg-neutral-50 px-3 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+            >
+              <KeyRound className="h-4 w-4" />
+              Use saved credentials
+            </button>
+          )}
           <div>
             <label
               htmlFor="username"
@@ -98,6 +156,15 @@ export default function LoginForm() {
               </button>
             </div>
           </div>
+          <label className="flex items-center gap-2 text-sm text-neutral-700">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="h-4 w-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500"
+            />
+            Remember me
+          </label>
           {error && (
             <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
               {error}
