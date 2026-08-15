@@ -6,31 +6,29 @@ import { pixelImgTag } from "@/lib/pixel";
 
 export default function PixelResult({ url }: { url: string }) {
   const boxRef = useRef<HTMLButtonElement>(null);
-  const [mode, setMode] = useState<"url" | "code">("url");
+  const [mode, setMode] = useState<"url" | "code">("code");
   const [copied, setCopied] = useState(false);
   const [copiedPixel, setCopiedPixel] = useState(false);
 
   const value = mode === "url" ? url : pixelImgTag(url);
 
-  async function copy() {
-    await navigator.clipboard.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+  async function writePixelToClipboard() {
+    const html = pixelImgTag(url);
+    if (navigator.clipboard?.write) {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          "text/html": new Blob([html], { type: "text/html" }),
+          "text/plain": new Blob([url], { type: "text/plain" }),
+        }),
+      ]);
+    } else {
+      throw new Error("unsupported");
+    }
   }
 
   async function copyPixel() {
-    const html = pixelImgTag(url);
     try {
-      if (navigator.clipboard?.write) {
-        await navigator.clipboard.write([
-          new ClipboardItem({
-            "text/html": new Blob([html], { type: "text/html" }),
-            "text/plain": new Blob([url], { type: "text/plain" }),
-          }),
-        ]);
-      } else {
-        throw new Error("unsupported");
-      }
+      await writePixelToClipboard();
     } catch {
       // Fallback: select the box contents and copy them.
       const box = boxRef.current;
@@ -48,12 +46,22 @@ export default function PixelResult({ url }: { url: string }) {
     setTimeout(() => setCopiedPixel(false), 1500);
   }
 
+  async function copy() {
+    if (mode === "code") {
+      await copyPixel();
+    } else {
+      await navigator.clipboard.writeText(url);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
+
   return (
     <div>
       <p className="text-sm text-neutral-500">
         {mode === "url"
-          ? "Use this URL in the image tag of your email."
-          : "Paste this img code into the HTML source of your email."}
+          ? "Copy the URL to use in an image tag in your email."
+          : "Copy the pixel and paste it into your email."}
       </p>
       <div className="mt-2 flex items-stretch gap-2">
         <div className="flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700">
@@ -74,7 +82,7 @@ export default function PixelResult({ url }: { url: string }) {
         <button
           type="button"
           onClick={copy}
-          title="Copy to clipboard"
+          title={mode === "url" ? "Copy URL" : "Copy pixel"}
           className="flex items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-neutral-700"
         >
           {copied ? (
