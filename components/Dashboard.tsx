@@ -198,17 +198,22 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
             <Image
               src="/assets/readmail-logo.png"
               alt="ReadMail logo"
-              width={32}
-              height={32}
-              className="h-8 w-8"
+              width={64}
+              height={64}
+              draggable={false}
+              className="h-20 w-20 select-none [-webkit-user-drag:none]"
             />
-            <h1 className="text-xl font-semibold text-neutral-900">ReadMail</h1>
+            <div>
+              <h1 className="text-xl font-semibold text-neutral-900">
+                ReadMail
+              </h1>
+              <p className="mt-0.5 text-sm text-neutral-500">
+                {user
+                  ? `Signed in as ${user.username}`
+                  : 'Pixels are saved in this browser until you sign in.'}
+              </p>
+            </div>
           </div>
-          <p className="mt-0.5 text-sm text-neutral-500">
-            {user
-              ? `Signed in as ${user.username}`
-              : "Pixels are saved in this browser until you sign in."}
-          </p>
         </div>
         {user ? (
           <button
