@@ -58,7 +58,7 @@ export default function PixelResult({ url }: { url: string }) {
           )}
         </button>
       </div>
-      <div className="mt-3 flex select-all items-center gap-2 rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-3 py-2">
+      <div className="mt-3 select-all rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-3 py-2">
         {/* eslint-disable-next-line @next/next/no-img-element -- must use a raw img so the real tracking URL is used and can be copied */}
         <img
           src={url}
@@ -67,11 +67,10 @@ export default function PixelResult({ url }: { url: string }) {
           height={1}
           title="Tracking pixel (invisible)"
         />
-        <span className="text-xs text-neutral-500">
-          Rendered pixel. Right-click it and copy it, or select it and paste
-          into your email.
-        </span>
       </div>
+      <p className="mt-1 select-none text-xs text-neutral-500">
+        Select the box above and copy it, then paste it into your email.
+      </p>
     </div>
   );
 }
