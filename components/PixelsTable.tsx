@@ -37,6 +37,7 @@ export default function PixelsTable({
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [resetTarget, setResetTarget] = useState<Pixel | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Pixel | null>(null);
 
   async function copyUrl(pixelId: string) {
     await navigator.clipboard.writeText(pixelUrl(pixelId));
@@ -52,6 +53,12 @@ export default function PixelsTable({
     if (!resetTarget) return;
     onReset(resetTarget.pixelId);
     setResetTarget(null);
+  }
+
+  function confirmDelete() {
+    if (!deleteTarget) return;
+    onDelete(deleteTarget.pixelId);
+    setDeleteTarget(null);
   }
 
   return (
@@ -101,6 +108,7 @@ export default function PixelsTable({
                     onToggle={toggleRow}
                     onDelete={onDelete}
                     onResetRequest={(pixel) => setResetTarget(pixel)}
+                    onDeleteRequest={(pixel) => setDeleteTarget(pixel)}
                   />
                 );
               })}
@@ -138,6 +146,36 @@ export default function PixelsTable({
           </div>
         </div>
       )}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 p-4">
+          <div className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-6 shadow-xl">
+            <h3 className="text-base font-semibold text-neutral-900">
+              Delete pixel?
+            </h3>
+            <p className="mt-1 text-sm text-neutral-600">
+              This permanently deletes{" "}
+              <span className="font-medium text-neutral-900">
+                {deleteTarget.purpose}
+              </span>{" "}
+              and its open history. This cannot be undone.
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -150,6 +188,7 @@ function FragmentRow({
   onToggle,
   onDelete,
   onResetRequest,
+  onDeleteRequest,
 }: {
   pixel: Pixel;
   expanded: boolean;
@@ -158,6 +197,7 @@ function FragmentRow({
   onToggle: (pixelId: string) => void;
   onDelete: (pixelId: string) => void;
   onResetRequest: (pixel: Pixel) => void;
+  onDeleteRequest: (pixel: Pixel) => void;
 }) {
   return (
     <>
@@ -215,7 +255,7 @@ function FragmentRow({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onDelete(pixel.pixelId);
+              onDeleteRequest(pixel);
             }}
             title="Delete pixel"
             className="rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-red-50 hover:text-red-600"
