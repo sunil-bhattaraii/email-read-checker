@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Loader2, Sparkles } from "lucide-react";
 import type { Pixel } from "@/lib/types";
 import PixelResult from "@/components/PixelResult";
@@ -16,11 +16,13 @@ export default function GeneratePanel({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ url: string } | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   async function generate(e: React.FormEvent) {
     e.preventDefault();
     if (!purpose.trim()) {
       setError("Enter a purpose first.");
+      inputRef.current?.focus();
       return;
     }
     setBusy(true);
@@ -44,6 +46,7 @@ export default function GeneratePanel({
       </p>
       <form onSubmit={generate} className="mt-4 flex flex-col gap-3 sm:flex-row">
         <input
+          ref={inputRef}
           type="text"
           value={purpose}
           onChange={(e) => setPurpose(e.target.value)}
