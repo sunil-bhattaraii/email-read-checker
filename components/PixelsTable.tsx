@@ -106,7 +106,6 @@ export default function PixelsTable({
                     copiedId={copiedId}
                     onCopyUrl={copyUrl}
                     onToggle={toggleRow}
-                    onDelete={onDelete}
                     onResetRequest={(pixel) => setResetTarget(pixel)}
                     onDeleteRequest={(pixel) => setDeleteTarget(pixel)}
                   />
@@ -186,7 +185,6 @@ function FragmentRow({
   copiedId,
   onCopyUrl,
   onToggle,
-  onDelete,
   onResetRequest,
   onDeleteRequest,
 }: {
@@ -195,7 +193,6 @@ function FragmentRow({
   copiedId: string | null;
   onCopyUrl: (pixelId: string) => void;
   onToggle: (pixelId: string) => void;
-  onDelete: (pixelId: string) => void;
   onResetRequest: (pixel: Pixel) => void;
   onDeleteRequest: (pixel: Pixel) => void;
 }) {
