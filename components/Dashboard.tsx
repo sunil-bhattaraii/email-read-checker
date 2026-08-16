@@ -196,24 +196,22 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
         <div>
           <div className="flex items-center gap-2">
             <Image
-              src="/assets/readmail-logo.png"
+              src="/assets/logo.svg"
               alt="ReadMail logo"
               width={64}
               height={64}
               draggable={false}
-              className="h-20 w-20 select-none [-webkit-user-drag:none]"
+              className="w-10 aspect-square select-none [-webkit-user-drag:none]"
             />
-            <div>
               <h1 className="text-xl font-semibold text-neutral-900">
                 ReadMail
               </h1>
-              <p className="mt-0.5 text-sm text-neutral-500">
+            </div>
+              <p className="mt-0.5 ml-12 text-sm text-neutral-500">
                 {user
                   ? `Signed in as ${user.username}`
                   : 'Pixels are saved in this browser until you sign in.'}
               </p>
-            </div>
-          </div>
         </div>
         {user ? (
           <button
