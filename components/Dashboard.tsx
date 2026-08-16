@@ -149,14 +149,27 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
     return { pixel, url: pixelUrl(pixel.pixelId) };
   }
 
-  async function handleDelete(pixelId: string) {
+  function handleDelete(pixelId: string) {
     if (!user) {
       setPixels((prev) => prev.filter((p) => p.pixelId !== pixelId));
       return;
     }
-    const res = await fetch(`/api/pixels/${pixelId}`, { method: "DELETE" });
-    if (res.ok) {
-      setPixels((prev) => prev.filter((p) => p.pixelId !== pixelId));
+    const target = pixels.find((p) => p.pixelId === pixelId);
+    setPixels((prev) => prev.filter((p) => p.pixelId !== pixelId));
+    if (target) {
+      fetch(`/api/pixels/${pixelId}`, { method: "DELETE" })
+        .then((res) => {
+          if (!res.ok) throw new Error("Delete failed.");
+        })
+        .catch(() => {
+          setPixels((prev) =>
+            [target, ...prev].sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            )
+          );
+        });
     }
   }
 
