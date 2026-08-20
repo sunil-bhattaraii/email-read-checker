@@ -1,0 +1,11 @@
+# nspt user keys — do not edit manually
+# Each entry maps a user's age public key to an age-wrapped group file key.
+key_version = 1
+
+[[users]]
+username = "sunil-bhattaraii"
+
+[[users.keys]]
+age = "age1rzs4evrkpvgyn47jay3apsxgxtggh0wlyg2t2uhn7j5tmr33s9hsn20trd"
+ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG2eQ52rqZVckIHtihan/TKGAjaOEg1SZjBinZjEJH+m"
+wrapped = "-----BEGIN AGE ENCRYPTED FILE-----\nYWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4TEpILzdjdGl5VTFIMEdX\nM0xwdGQ5K2d0SFVUb1pUSnpSMGh6aGhwblQ0Ckg0cFJTZ2RRTHFJaUgyckp4aWNT\nR296SXNBbVBZZ3Zndm4zL3ZDaWViTjQKLS0tIDhCdEVwb1ByK2ZMOWllYUp2dHYy\nMzQ0ZXd3dFhiVW83eFVBYlh3eVNMcEUK2UblqB7UnBXgUNNxRH825nIfDDc0yada\nZjMBwdyVl+r9NEFF3cWL2Gsm0d0CSc/MJXMy6eewhHHDdUyAjbji5g==\n-----END AGE ENCRYPTED FILE-----\n"
