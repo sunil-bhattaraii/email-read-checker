@@ -5,6 +5,7 @@ import {
   Check,
   ChevronDown,
   Copy,
+  Eye,
   RefreshCw,
   RotateCcw,
   Trash2,
@@ -19,6 +20,13 @@ function formatDate(value: string | null): string {
 
 function pixelUrl(pixelId: string): string {
   return `${window.location.origin}/p/${pixelId}`;
+}
+
+function viewsImageUrl(
+  pixelId: string,
+  theme: "light" | "dark" = "light"
+): string {
+  return `${window.location.origin}/p/${pixelId}/views-image?theme=${theme}`;
 }
 
 export default function PixelsTable({
@@ -36,6 +44,8 @@ export default function PixelsTable({
 }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedBadgeId, setCopiedBadgeId] = useState<string | null>(null);
+  const [badgeTheme, setBadgeTheme] = useState<"light" | "dark">("light");
   const [resetTarget, setResetTarget] = useState<Pixel | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Pixel | null>(null);
 
@@ -43,6 +53,12 @@ export default function PixelsTable({
     await navigator.clipboard.writeText(pixelUrl(pixelId));
     setCopiedId(pixelId);
     setTimeout(() => setCopiedId(null), 1500);
+  }
+
+  async function copyBadge(pixelId: string) {
+    await navigator.clipboard.writeText(viewsImageUrl(pixelId, badgeTheme));
+    setCopiedBadgeId(pixelId);
+    setTimeout(() => setCopiedBadgeId(null), 1500);
   }
 
   function toggleRow(pixelId: string) {
@@ -104,7 +120,11 @@ export default function PixelsTable({
                     pixel={pixel}
                     expanded={expanded}
                     copiedId={copiedId}
+                    copiedBadgeId={copiedBadgeId}
+                    badgeTheme={badgeTheme}
                     onCopyUrl={copyUrl}
+                    onCopyBadge={copyBadge}
+                    onBadgeThemeChange={setBadgeTheme}
                     onToggle={toggleRow}
                     onResetRequest={(pixel) => setResetTarget(pixel)}
                     onDeleteRequest={(pixel) => setDeleteTarget(pixel)}
@@ -183,7 +203,11 @@ function FragmentRow({
   pixel,
   expanded,
   copiedId,
+  copiedBadgeId,
+  badgeTheme,
   onCopyUrl,
+  onCopyBadge,
+  onBadgeThemeChange,
   onToggle,
   onResetRequest,
   onDeleteRequest,
@@ -191,7 +215,11 @@ function FragmentRow({
   pixel: Pixel;
   expanded: boolean;
   copiedId: string | null;
+  copiedBadgeId: string | null;
+  badgeTheme: "light" | "dark";
   onCopyUrl: (pixelId: string) => void;
+  onCopyBadge: (pixelId: string) => void;
+  onBadgeThemeChange: (theme: "light" | "dark") => void;
   onToggle: (pixelId: string) => void;
   onResetRequest: (pixel: Pixel) => void;
   onDeleteRequest: (pixel: Pixel) => void;
@@ -214,23 +242,40 @@ function FragmentRow({
           </span>
         </td>
         <td className="px-6 py-3">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onCopyUrl(pixel.pixelId);
-            }}
-            title="Copy URL"
-            className="group inline-flex items-center gap-1.5 font-mono text-xs text-neutral-600 hover:text-indigo-600"
-          >
-            <span className="max-w-[220px] truncate">
-              /p/{pixel.pixelId}
-            </span>
-            {copiedId === pixel.pixelId ? (
-              <Check className="h-3.5 w-3.5 text-green-600" />
-            ) : (
-              <Copy className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
-            )}
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onCopyUrl(pixel.pixelId);
+              }}
+              title="Copy URL"
+              className="group inline-flex items-center gap-1.5 font-mono text-xs text-neutral-600 hover:text-indigo-600"
+            >
+              <span className="max-w-[220px] truncate">
+                /p/{pixel.pixelId}
+              </span>
+              {copiedId === pixel.pixelId ? (
+                <Check className="h-3.5 w-3.5 text-green-600" />
+              ) : (
+                <Copy className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
+              )}
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onCopyBadge(pixel.pixelId);
+              }}
+              title="Copy badge image URL"
+              aria-label="Copy badge image URL"
+              className="rounded-md p-1 text-neutral-400 transition-colors hover:text-indigo-600"
+            >
+              {copiedBadgeId === pixel.pixelId ? (
+                <Check className="h-3.5 w-3.5 text-green-600" />
+              ) : (
+                <Eye className="h-3.5 w-3.5" />
+              )}
+            </button>
+          </div>
         </td>
         <td className="px-6 py-3">
           <span className="font-medium text-neutral-900">{pixel.opens}</span>
@@ -265,6 +310,66 @@ function FragmentRow({
         <tr className="bg-neutral-50/60">
           <td colSpan={5} className="px-6 py-4">
             <PixelResult url={pixelUrl(pixel.pixelId)} />
+            <div className="mt-4 border-t border-neutral-200 pt-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold text-neutral-500">
+                  View-count badge
+                </p>
+                <div className="flex rounded-md border border-neutral-300 bg-white p-0.5">
+                  <button
+                    type="button"
+                    onClick={() => onBadgeThemeChange("light")}
+                    className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
+                      badgeTheme === "light"
+                        ? "bg-neutral-900 text-white"
+                        : "text-neutral-600 hover:bg-neutral-100"
+                    }`}
+                  >
+                    Light
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onBadgeThemeChange("dark")}
+                    className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
+                      badgeTheme === "dark"
+                        ? "bg-neutral-900 text-white"
+                        : "text-neutral-600 hover:bg-neutral-100"
+                    }`}
+                  >
+                    Dark
+                  </button>
+                </div>
+              </div>
+              <div className="mt-2 flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element -- dynamic SVG badge from the views-image API */}
+                <img
+                  src={viewsImageUrl(pixel.pixelId, badgeTheme)}
+                  alt="View-count badge"
+                  className="h-7 shrink-0 rounded-full border border-neutral-200"
+                />
+                <div className="min-w-0 flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-1.5 font-mono text-xs text-neutral-700">
+                  {viewsImageUrl(pixel.pixelId, badgeTheme)}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onCopyBadge(pixel.pixelId)}
+                  title="Copy badge image URL"
+                  className="flex shrink-0 items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-neutral-700"
+                >
+                  {copiedBadgeId === pixel.pixelId ? (
+                    <>
+                      <Check className="h-3.5 w-3.5" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3.5 w-3.5" />
+                      Copy
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </td>
         </tr>
       )}
