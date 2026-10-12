@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, after } from "next/server";
 import { connectDB } from "@/lib/db";
 import { countView } from "@/lib/track-view";
 
@@ -12,12 +12,16 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  try {
-    await connectDB({ timeoutMS: 2000 });
-    await countView(req, id);
-  } catch {
-    // Never fail the image load even if tracking is down.
-  }
+
+  after(async () => {
+    try {
+      await connectDB({ timeoutMS: 2000 });
+      await countView(req, id);
+    } catch {
+      // Never fail tracking even if the database is slow or down.
+    }
+  });
+
   return new Response(TRANSPARENT_GIF, {
     headers: {
       "Content-Type": "image/gif",

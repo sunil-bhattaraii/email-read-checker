@@ -1,11 +1,10 @@
 import { NextRequest } from "next/server";
 import { Pixel } from "@/models/Pixel";
 import { ViewLock } from "@/models/ViewLock";
-import { ViewBucket } from "@/models/ViewBucket";
 import { getSessionUser, SESSION_COOKIE } from "@/lib/auth";
 import { GUEST_OWNED_COOKIE } from "@/lib/guest";
 import { getClientIp, hashIp, VIEW_WINDOW_MS } from "@/lib/ip";
-import { hourKey } from "@/lib/buckets";
+import { bufferView, maybeFlush, startFlushTimer } from "@/lib/view-buffer";
 
 export async function countView(
   req: NextRequest,
@@ -13,21 +12,9 @@ export async function countView(
 ): Promise<boolean> {
   if (await shouldSkipOwnerPreview(req, pixelId)) return false;
   if (!(await shouldCountIp(req, pixelId))) return false;
-  const now = new Date();
-  await Pixel.findOneAndUpdate(
-    { pixelId },
-    {
-      $inc: { opens: 1 },
-      $set: { lastOpenedAt: now },
-      $setOnInsert: { purpose: "" },
-    },
-    { upsert: true }
-  ).exec();
-  await ViewBucket.updateOne(
-    { pixelId, hour: hourKey(now) },
-    { $inc: { count: 1 }, $set: { at: now } },
-    { upsert: true }
-  ).exec();
+  bufferView(pixelId, new Date());
+  startFlushTimer();
+  await maybeFlush();
   return true;
 }
 
