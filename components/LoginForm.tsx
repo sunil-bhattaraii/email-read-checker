@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useSyncExternalStore, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, KeyRound, Loader2, LogIn } from "lucide-react";
@@ -9,22 +9,38 @@ const SAVED_CREDENTIALS_KEY = "erc_saved_credentials";
 
 type SavedCredentials = { username: string; password: string };
 
+let cachedSavedRaw: string | null | undefined;
+let cachedSaved: SavedCredentials | null = null;
+
 function loadSavedCredentials(): SavedCredentials | null {
-  try {
-    const raw = window.localStorage.getItem(SAVED_CREDENTIALS_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (
-      parsed &&
-      typeof parsed.username === "string" &&
-      typeof parsed.password === "string"
-    ) {
-      return { username: parsed.username, password: parsed.password };
+  const raw = window.localStorage.getItem(SAVED_CREDENTIALS_KEY);
+  if (raw === cachedSavedRaw) return cachedSaved;
+  cachedSavedRaw = raw;
+  let parsed: SavedCredentials | null = null;
+  if (raw) {
+    try {
+      const value = JSON.parse(raw);
+      if (
+        value &&
+        typeof value.username === "string" &&
+        typeof value.password === "string"
+      ) {
+        parsed = { username: value.username, password: value.password };
+      }
+    } catch {
+      parsed = null;
     }
-    return null;
-  } catch {
-    return null;
   }
+  cachedSaved = parsed;
+  return parsed;
+}
+
+function subscribeToSavedCredentials(): () => void {
+  return () => {};
+}
+
+function getServerSavedCredentialsSnapshot(): SavedCredentials | null {
+  return null;
 }
 
 export default function LoginForm() {
@@ -33,8 +49,10 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
-  const [saved, setSaved] = useState<SavedCredentials | null>(() =>
-    loadSavedCredentials()
+  const saved = useSyncExternalStore(
+    subscribeToSavedCredentials,
+    loadSavedCredentials,
+    getServerSavedCredentialsSnapshot
   );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -45,10 +63,8 @@ export default function LoginForm() {
         SAVED_CREDENTIALS_KEY,
         JSON.stringify({ username: username.trim(), password })
       );
-      setSaved({ username: username.trim(), password });
     } else {
       window.localStorage.removeItem(SAVED_CREDENTIALS_KEY);
-      setSaved(null);
     }
   }
 
@@ -57,7 +73,6 @@ export default function LoginForm() {
     setUsername(saved.username);
     setPassword(saved.password);
     setRememberMe(true);
-    setSaved(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {

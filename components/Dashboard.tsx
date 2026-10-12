@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,9 +20,8 @@ import Instructions from "@/components/Instructions";
 
 export default function Dashboard({ user }: { user: SessionUser | null }) {
   const router = useRouter();
-  const [pixels, setPixels] = useState<Pixel[]>(() =>
-    user ? [] : loadGuestPixels()
-  );
+  const [pixels, setPixels] = useState<Pixel[]>([]);
+  const skipFirstGuestSave = useRef(true);
   const [loading, setLoading] = useState(Boolean(user));
 
   const fetchPixels = useCallback(async (): Promise<Pixel[]> => {
@@ -59,10 +58,12 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
   }, []);
 
   useEffect(() => {
-    if (!user) {
-      saveGuestPixels(pixels);
+    if (user) return;
+    if (skipFirstGuestSave.current) {
+      skipFirstGuestSave.current = false;
       return;
     }
+    saveGuestPixels(pixels);
   }, [user, pixels]);
 
   useEffect(() => {
