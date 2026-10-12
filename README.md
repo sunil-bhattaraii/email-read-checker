@@ -76,6 +76,8 @@ Pass `?theme=` to switch the color scheme:
 ```
 
 The badge is served without caching, so it always shows the current count.
+It is read-only: it reflects views recorded by the tracking pixel and never
+increments the counter itself.
 
 ## Accounts
 

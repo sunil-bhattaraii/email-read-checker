@@ -1,3 +1,4 @@
+import { NextRequest } from "next/server";
 import { connectDB } from "@/lib/db";
 import { Pixel } from "@/models/Pixel";
 import {
@@ -6,7 +7,7 @@ import {
 } from "@/lib/views-image";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;

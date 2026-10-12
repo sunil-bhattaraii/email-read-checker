@@ -46,6 +46,7 @@ export default function PixelsTable({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [copiedBadgeId, setCopiedBadgeId] = useState<string | null>(null);
   const [badgeTheme, setBadgeTheme] = useState<"light" | "dark">("light");
+  const [previewRev, setPreviewRev] = useState(0);
   const [resetTarget, setResetTarget] = useState<Pixel | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Pixel | null>(null);
 
@@ -62,7 +63,16 @@ export default function PixelsTable({
   }
 
   function toggleRow(pixelId: string) {
-    setExpandedId((cur) => (cur === pixelId ? null : pixelId));
+    setExpandedId((cur) => {
+      const next = cur === pixelId ? null : pixelId;
+      if (next) setPreviewRev((r) => r + 1);
+      return next;
+    });
+  }
+
+  function changeBadgeTheme(theme: "light" | "dark") {
+    setBadgeTheme(theme);
+    setPreviewRev((r) => r + 1);
   }
 
   function confirmReset() {
@@ -122,9 +132,10 @@ export default function PixelsTable({
                     copiedId={copiedId}
                     copiedBadgeId={copiedBadgeId}
                     badgeTheme={badgeTheme}
+                    previewRev={previewRev}
                     onCopyUrl={copyUrl}
                     onCopyBadge={copyBadge}
-                    onBadgeThemeChange={setBadgeTheme}
+                    onBadgeThemeChange={changeBadgeTheme}
                     onToggle={toggleRow}
                     onResetRequest={(pixel) => setResetTarget(pixel)}
                     onDeleteRequest={(pixel) => setDeleteTarget(pixel)}
@@ -205,6 +216,7 @@ function FragmentRow({
   copiedId,
   copiedBadgeId,
   badgeTheme,
+  previewRev,
   onCopyUrl,
   onCopyBadge,
   onBadgeThemeChange,
@@ -217,6 +229,7 @@ function FragmentRow({
   copiedId: string | null;
   copiedBadgeId: string | null;
   badgeTheme: "light" | "dark";
+  previewRev: number;
   onCopyUrl: (pixelId: string) => void;
   onCopyBadge: (pixelId: string) => void;
   onBadgeThemeChange: (theme: "light" | "dark") => void;
@@ -343,7 +356,7 @@ function FragmentRow({
               <div className="mt-2 flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element -- dynamic SVG badge from the views-image API */}
                 <img
-                  src={viewsImageUrl(pixel.pixelId, badgeTheme)}
+                  src={`${viewsImageUrl(pixel.pixelId, badgeTheme)}&t=${previewRev}`}
                   alt="View-count badge"
                   className="h-7 shrink-0 rounded-full border border-neutral-200"
                 />
