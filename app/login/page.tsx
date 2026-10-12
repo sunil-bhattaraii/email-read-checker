@@ -24,7 +24,7 @@ export default async function LoginPage() {
     <main className="flex flex-1 items-center justify-center px-4 py-16">
       <div className="w-full max-w-sm">
         <LoginForm />
-        <p className="mt-4 text-center text-xs text-neutral-500">
+        <p className="mt-4 text-center text-xs text-neutral-500 dark:text-neutral-400">
           Counters you made without signing in are added to your account when you
           sign in.
         </p>

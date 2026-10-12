@@ -90,32 +90,32 @@ export default function PixelsTable({
   }
 
   return (
-    <section className="mt-6 rounded-xl border border-neutral-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4">
-        <h2 className="text-sm font-semibold text-neutral-900">
+    <section className="mt-6 rounded-xl border border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-800">
+        <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
           Your counters
-          <span className="ml-2 text-xs font-normal text-neutral-500">
+          <span className="ml-2 text-xs font-normal text-neutral-500 dark:text-neutral-400">
             {pixels.length} total
           </span>
         </h2>
         <button
           onClick={onRefresh}
           title="Refresh"
-          className="flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+          className="flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
         >
           <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
           Refresh
         </button>
       </div>
       {pixels.length === 0 ? (
-        <p className="px-6 py-10 text-center text-sm text-neutral-500">
+        <p className="px-6 py-10 text-center text-sm text-neutral-500 dark:text-neutral-400">
           No counters yet. Create one above.
         </p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-neutral-200 text-xs uppercase tracking-wide text-neutral-500">
+              <tr className="border-b border-neutral-200 text-xs uppercase tracking-wide text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
                 <th className="px-6 py-3 font-medium">Purpose</th>
                 <th className="px-6 py-3 font-medium">Tracking URL</th>
                 <th className="px-6 py-3 font-medium">Views</th>
@@ -123,7 +123,7 @@ export default function PixelsTable({
                 <th className="px-6 py-3 text-right font-medium"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
               {pixels.map((pixel) => {
                 const expanded = expandedId === pixel.pixelId;
                 return (
@@ -149,14 +149,14 @@ export default function PixelsTable({
         </div>
       )}
       {resetTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 p-4">
-          <div className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-6 shadow-xl">
-            <h3 className="text-base font-semibold text-neutral-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 p-4 dark:bg-black/60">
+          <div className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-800 dark:bg-neutral-900">
+            <h3 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
               Reset views?
             </h3>
-            <p className="mt-1 text-sm text-neutral-600">
+            <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
               This resets the view count for{" "}
-              <span className="font-medium text-neutral-900">
+              <span className="font-medium text-neutral-900 dark:text-neutral-100">
                 {resetTarget.purpose}
               </span>{" "}
               to 0 and clears the last viewed time. This cannot be undone.
@@ -164,7 +164,7 @@ export default function PixelsTable({
             <div className="mt-5 flex justify-end gap-2">
               <button
                 onClick={() => setResetTarget(null)}
-                className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+                className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
               >
                 Cancel
               </button>
@@ -179,14 +179,14 @@ export default function PixelsTable({
         </div>
       )}
       {deleteTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 p-4">
-          <div className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-6 shadow-xl">
-            <h3 className="text-base font-semibold text-neutral-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 p-4 dark:bg-black/60">
+          <div className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-800 dark:bg-neutral-900">
+            <h3 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
               Delete counter?
             </h3>
-            <p className="mt-1 text-sm text-neutral-600">
+            <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
               This permanently deletes{" "}
-              <span className="font-medium text-neutral-900">
+              <span className="font-medium text-neutral-900 dark:text-neutral-100">
                 {deleteTarget.purpose}
               </span>{" "}
               and its view history. This cannot be undone.
@@ -194,7 +194,7 @@ export default function PixelsTable({
             <div className="mt-5 flex justify-end gap-2">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+                className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
               >
                 Cancel
               </button>
@@ -244,9 +244,13 @@ function FragmentRow({
       <tr
         onClick={() => onToggle(pixel.pixelId)}
         aria-expanded={expanded}
-        className={`cursor-pointer ${expanded ? "bg-neutral-50" : "hover:bg-neutral-50"}`}
+        className={`cursor-pointer ${
+          expanded
+            ? "bg-neutral-50 dark:bg-neutral-800/50"
+            : "hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
+        }`}
       >
-        <td className="max-w-[200px] px-6 py-3 text-neutral-900">
+        <td className="max-w-[200px] px-6 py-3 text-neutral-900 dark:text-neutral-100">
           <span className="flex items-center gap-1.5">
             <ChevronDown
               className={`h-3.5 w-3.5 shrink-0 text-neutral-400 transition-transform ${
@@ -264,13 +268,13 @@ function FragmentRow({
                 onCopyUrl(pixel.pixelId);
               }}
               title="Copy URL"
-              className="group inline-flex items-center gap-1.5 font-mono text-xs text-neutral-600 hover:text-indigo-600"
+              className="group inline-flex items-center gap-1.5 font-mono text-xs text-neutral-600 hover:text-indigo-600 dark:text-neutral-400 dark:hover:text-indigo-400"
             >
               <span className="max-w-[220px] truncate">
                 /p/{pixel.pixelId}
               </span>
               {copiedId === pixel.pixelId ? (
-                <Check className="h-3.5 w-3.5 text-green-600" />
+                <Check className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
               ) : (
                 <Copy className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
               )}
@@ -282,10 +286,10 @@ function FragmentRow({
               }}
               title="Copy badge image URL"
               aria-label="Copy badge image URL"
-              className="rounded-md p-1 text-neutral-400 transition-colors hover:text-indigo-600"
+              className="rounded-md p-1 text-neutral-400 transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
             >
               {copiedBadgeId === pixel.pixelId ? (
-                <Check className="h-3.5 w-3.5 text-green-600" />
+                <Check className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
               ) : (
                 <Eye className="h-3.5 w-3.5" />
               )}
@@ -293,9 +297,11 @@ function FragmentRow({
           </div>
         </td>
         <td className="px-6 py-3">
-          <span className="font-medium text-neutral-900">{pixel.opens}</span>
+          <span className="font-medium text-neutral-900 dark:text-neutral-100">
+            {pixel.opens}
+          </span>
         </td>
-        <td className="px-6 py-3 text-neutral-600">
+        <td className="px-6 py-3 text-neutral-600 dark:text-neutral-400">
           {formatDate(pixel.lastOpenedAt)}
         </td>
         <td className="px-6 py-3 text-right">
@@ -305,7 +311,7 @@ function FragmentRow({
               onResetRequest(pixel);
             }}
             title="Reset views"
-            className="rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-amber-50 hover:text-amber-600"
+            className="rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-amber-50 hover:text-amber-600 dark:hover:bg-amber-950/40 dark:hover:text-amber-400"
           >
             <RotateCcw className="h-4 w-4" />
           </button>
@@ -315,29 +321,29 @@ function FragmentRow({
               onDeleteRequest(pixel);
             }}
             title="Delete counter"
-            className="rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-red-50 hover:text-red-600"
+            className="rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400"
           >
             <Trash2 className="h-4 w-4" />
           </button>
         </td>
       </tr>
       {expanded && (
-        <tr className="bg-neutral-50/60">
+        <tr className="bg-neutral-50/60 dark:bg-neutral-900/40">
           <td colSpan={5} className="px-6 py-4">
             <PixelResult url={pixelUrl(pixel.pixelId)} />
-            <div className="mt-4 border-t border-neutral-200 pt-4">
+            <div className="mt-4 border-t border-neutral-200 pt-4 dark:border-neutral-800">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold text-neutral-500">
+                <p className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">
                   View-count badge
                 </p>
-                <div className="flex rounded-md bg-neutral-100 p-0.5">
+                <div className="flex rounded-md bg-neutral-100 p-0.5 dark:bg-neutral-800">
                   <button
                     type="button"
                     onClick={() => onBadgeThemeChange("light")}
                     className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
                       badgeTheme === "light"
-                        ? "bg-white text-neutral-900 shadow-sm"
-                        : "text-neutral-500 hover:text-neutral-900"
+                        ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-700 dark:text-neutral-100"
+                        : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
                     }`}
                   >
                     Light
@@ -347,8 +353,8 @@ function FragmentRow({
                     onClick={() => onBadgeThemeChange("dark")}
                     className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
                       badgeTheme === "dark"
-                        ? "bg-white text-neutral-900 shadow-sm"
-                        : "text-neutral-500 hover:text-neutral-900"
+                        ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-700 dark:text-neutral-100"
+                        : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
                     }`}
                   >
                     Dark
@@ -358,8 +364,8 @@ function FragmentRow({
                     onClick={() => onBadgeThemeChange("neutral")}
                     className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
                       badgeTheme === "neutral"
-                        ? "bg-white text-neutral-900 shadow-sm"
-                        : "text-neutral-500 hover:text-neutral-900"
+                        ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-700 dark:text-neutral-100"
+                        : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
                     }`}
                   >
                     Neutral
@@ -371,16 +377,16 @@ function FragmentRow({
                 <img
                   src={`${viewsImageUrl(pixel.pixelId, badgeTheme)}&t=${previewRev}`}
                   alt="View-count badge"
-                  className="h-7 shrink-0 rounded-full border border-neutral-200"
+                  className="h-7 shrink-0 rounded-full border border-neutral-200 dark:border-neutral-700"
                 />
-                <div className="min-w-0 flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-1.5 font-mono text-xs text-neutral-700">
+                <div className="min-w-0 flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-1.5 font-mono text-xs text-neutral-700 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-300">
                   {viewsImageUrl(pixel.pixelId, badgeTheme)}
                 </div>
                 <button
                   type="button"
                   onClick={() => onCopyBadge(pixel.pixelId)}
                   title="Copy badge image URL"
-                  className="flex shrink-0 items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+                  className="flex shrink-0 items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
                 >
                   {copiedBadgeId === pixel.pixelId ? (
                     <>

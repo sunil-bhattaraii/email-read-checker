@@ -39,9 +39,11 @@ export default function GeneratePanel({
   }
 
   return (
-    <section className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-      <h2 className="text-sm font-semibold text-neutral-900">Create a counter</h2>
-      <p className="mt-1 text-sm text-neutral-500">
+    <section className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+      <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+        Create a counter
+      </h2>
+      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
         Give the counter a label so you can recognize it later.
       </p>
       <form onSubmit={generate} className="mt-4 flex flex-col gap-3 sm:flex-row">
@@ -51,7 +53,7 @@ export default function GeneratePanel({
           value={purpose}
           onChange={(e) => setPurpose(e.target.value)}
           placeholder="e.g. Landing page, pricing page, portfolio item"
-          className="flex-1 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+          className="flex-1 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100"
         />
         <button
           type="submit"
@@ -67,12 +69,12 @@ export default function GeneratePanel({
         </button>
       </form>
       {error && (
-        <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </p>
       )}
       {result && (
-        <div className="mt-5 border-t border-neutral-200 pt-5">
+        <div className="mt-5 border-t border-neutral-200 pt-5 dark:border-neutral-800">
           <PixelResult url={result.url} />
         </div>
       )}

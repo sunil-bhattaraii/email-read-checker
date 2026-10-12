@@ -13,7 +13,7 @@ export default function ViewsChart({
   return (
     <div>
       <div
-        className="flex items-end gap-px border-b border-neutral-200"
+        className="flex items-end gap-px border-b border-neutral-200 dark:border-neutral-800"
         style={{ height }}
       >
         {points.map((p, i) => (
@@ -27,7 +27,7 @@ export default function ViewsChart({
           />
         ))}
       </div>
-      <div className="mt-1 flex justify-between text-[10px] text-neutral-400">
+      <div className="mt-1 flex justify-between text-[10px] text-neutral-400 dark:text-neutral-500">
         <span>{points[0]?.label}</span>
         {points.length > 2 && <span>{points[mid]?.label}</span>}
         <span>{points[points.length - 1]?.label}</span>

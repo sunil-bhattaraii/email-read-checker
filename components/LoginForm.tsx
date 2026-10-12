@@ -102,7 +102,7 @@ export default function LoginForm() {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="rounded-xl border border-neutral-200 bg-white p-8 shadow-sm">
+      <div className="rounded-xl border border-neutral-200 bg-white p-8 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
         <div className="flex items-center gap-2">
           <Image
             src="/assets/readmail-logo.png"
@@ -111,9 +111,11 @@ export default function LoginForm() {
             height={32}
             className="h-8 w-8"
           />
-          <h1 className="text-lg font-semibold text-neutral-900">ReadMail</h1>
+          <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+            ReadMail
+          </h1>
         </div>
-        <p className="mt-1 text-sm text-neutral-500">
+        <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
           Sign in with your username. New usernames are created on first sign
           in.
         </p>
@@ -122,7 +124,7 @@ export default function LoginForm() {
             <button
               type="button"
               onClick={useSaved}
-              className="flex w-full items-center justify-center gap-1.5 rounded-md border border-neutral-300 bg-neutral-50 px-3 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+              className="flex w-full items-center justify-center gap-1.5 rounded-md border border-neutral-300 bg-neutral-50 px-3 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
             >
               <KeyRound className="h-4 w-4" />
               Use saved credentials
@@ -131,7 +133,7 @@ export default function LoginForm() {
           <div>
             <label
               htmlFor="username"
-              className="mb-1 block text-sm font-medium text-neutral-700"
+              className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300"
             >
               Username
             </label>
@@ -142,14 +144,14 @@ export default function LoginForm() {
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+              className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100"
               placeholder="your name"
             />
           </div>
           <div>
             <label
               htmlFor="password"
-              className="mb-1 block text-sm font-medium text-neutral-700"
+              className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300"
             >
               Password
             </label>
@@ -161,7 +163,7 @@ export default function LoginForm() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 pr-10 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 pr-10 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100"
                 placeholder="at least 8 characters"
               />
               <button
@@ -169,7 +171,7 @@ export default function LoginForm() {
                 onClick={() => setShowPassword((v) => !v)}
                 title={showPassword ? "Hide password" : "Show password"}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400 transition-colors hover:text-neutral-600"
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400 transition-colors hover:text-neutral-600 dark:hover:text-neutral-200"
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />
@@ -179,17 +181,17 @@ export default function LoginForm() {
               </button>
             </div>
           </div>
-          <label className="flex items-center gap-2 text-sm text-neutral-700">
+          <label className="flex items-center gap-2 text-sm text-neutral-700 dark:text-neutral-300">
             <input
               type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="h-4 w-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500"
+              className="h-4 w-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500 dark:border-neutral-600 dark:bg-neutral-800"
             />
             Remember me
           </label>
           {error && (
-            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
               {error}
             </p>
           )}
@@ -207,7 +209,7 @@ export default function LoginForm() {
           </button>
         </form>
       </div>
-      <p className="mt-4 text-center text-xs text-neutral-500">
+      <p className="mt-4 text-center text-xs text-neutral-500 dark:text-neutral-400">
         Use a strong password. It cannot be recovered if you forget it.
       </p>
     </div>

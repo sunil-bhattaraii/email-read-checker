@@ -53,20 +53,20 @@ export default function PixelResult({ url }: { url: string }) {
 
   return (
     <div className="relative">
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-neutral-500 dark:text-neutral-400">
         {mode === "url"
           ? "Copy the URL to use in an image tag."
           : "Copy the counter and paste it where you want to track views."}
       </p>
       <div className="mt-2 flex items-stretch gap-2">
-        <div className="flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700">
+        <div className="flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-300">
           {value}
         </div>
         <button
           type="button"
           onClick={() => setMode(mode === "url" ? "code" : "url")}
           title={mode === "url" ? "Show img code" : "Show URL"}
-          className="flex items-center justify-center rounded-md border border-neutral-900 bg-white px-3 text-neutral-600 transition-colors hover:bg-neutral-100"
+          className="flex items-center justify-center rounded-md border border-neutral-900 bg-white px-3 text-neutral-600 transition-colors hover:bg-neutral-100 dark:border-neutral-300 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
         >
           <Code2 className="h-4 w-4" />
         </button>
@@ -74,7 +74,7 @@ export default function PixelResult({ url }: { url: string }) {
           type="button"
           onClick={copy}
           title={mode === "url" ? "Copy URL" : "Copy counter"}
-          className="flex items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-neutral-700"
+          className="flex items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
         >
           {copied ? (
             <>

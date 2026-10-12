@@ -17,6 +17,7 @@ import {
 import GeneratePanel from "@/components/GeneratePanel";
 import PixelsTable from "@/components/PixelsTable";
 import Instructions from "@/components/Instructions";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Dashboard({ user }: { user: SessionUser | null }) {
   const router = useRouter();
@@ -217,33 +218,36 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
               draggable={false}
               className="w-10 aspect-square select-none [-webkit-user-drag:none]"
             />
-              <h1 className="text-xl font-semibold text-neutral-900">
+              <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
                 ReadMail
               </h1>
             </div>
-              <p className="mt-0.5 ml-12 text-sm text-neutral-500">
+              <p className="mt-0.5 ml-12 text-sm text-neutral-500 dark:text-neutral-400">
                 {user
                   ? `Signed in as ${user.username}`
                   : 'Counters are saved in this browser until you sign in.'}
               </p>
         </div>
-        {user ? (
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign out
-          </button>
-        ) : (
-          <Link
-            href="/login"
-            className="flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
-          >
-            <LogIn className="h-4 w-4" />
-            Sign in
-          </Link>
-        )}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+            >
+              <LogIn className="h-4 w-4" />
+              Sign in
+            </Link>
+          )}
+        </div>
       </header>
 
       <GeneratePanel createPixel={createPixel} />

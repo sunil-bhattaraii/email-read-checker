@@ -83,10 +83,12 @@ export default function ViewsAnalytics({ pixelId }: { pixelId: string }) {
   const rangeLabel = range === "48h" ? "48 hours" : `${RANGE_DAYS[range]} days`;
 
   return (
-    <div className="mt-4 border-t border-neutral-200 pt-4">
+    <div className="mt-4 border-t border-neutral-200 pt-4 dark:border-neutral-800">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-neutral-500">Views over time</p>
-        <div className="flex rounded-md bg-neutral-100 p-0.5">
+        <p className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">
+          Views over time
+        </p>
+        <div className="flex rounded-md bg-neutral-100 p-0.5 dark:bg-neutral-800">
           {RANGES.map((r) => (
             <button
               key={r.value}
@@ -94,8 +96,8 @@ export default function ViewsAnalytics({ pixelId }: { pixelId: string }) {
               onClick={() => setRange(r.value)}
               className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
                 range === r.value
-                  ? "bg-white text-neutral-900 shadow-sm"
-                  : "text-neutral-500 hover:text-neutral-900"
+                  ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-700 dark:text-neutral-100"
+                  : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
               }`}
             >
               {r.label}
@@ -105,12 +107,16 @@ export default function ViewsAnalytics({ pixelId }: { pixelId: string }) {
       </div>
       <div className="mt-3">
         {failed ? (
-          <p className="text-xs text-neutral-400">Couldn&apos;t load analytics.</p>
+          <p className="text-xs text-neutral-400 dark:text-neutral-500">
+            Couldn&apos;t load analytics.
+          </p>
         ) : !data ? (
-          <p className="text-xs text-neutral-400">Loading…</p>
+          <p className="text-xs text-neutral-400 dark:text-neutral-500">
+            Loading…
+          </p>
         ) : (
           <>
-            <p className="mb-1 text-xs text-neutral-500">
+            <p className="mb-1 text-xs text-neutral-500 dark:text-neutral-400">
               {total} view{total === 1 ? "" : "s"} in the last {rangeLabel}
             </p>
             <ViewsChart points={points} />

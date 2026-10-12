@@ -80,6 +80,8 @@ export const metadata: Metadata = {
   },
 };
 
+const themeScript = `(function(){try{var k="theme";var s=localStorage.getItem(k);var d=s==="dark"||(!s&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);}catch(e){}})();`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   const siteUrl =
     process.env.APP_URL ?? "https://readmail.sunil-bhattarai.com.np";
@@ -94,9 +96,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-neutral-50 text-neutral-900">
+      <body className="flex min-h-full flex-col bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {children}
         <Footer />
         <script
