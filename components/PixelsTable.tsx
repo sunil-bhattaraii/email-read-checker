@@ -49,6 +49,7 @@ export default function PixelsTable({
   const [copiedBadgeId, setCopiedBadgeId] = useState<string | null>(null);
   const [badgeTheme, setBadgeTheme] = useState<ViewsImageTheme>("light");
   const [previewRev, setPreviewRev] = useState(0);
+  const [refreshTick, setRefreshTick] = useState(0);
   const [resetTarget, setResetTarget] = useState<Pixel | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Pixel | null>(null);
 
@@ -77,6 +78,11 @@ export default function PixelsTable({
     setPreviewRev((r) => r + 1);
   }
 
+  function handleRefresh() {
+    onRefresh();
+    setRefreshTick((t) => t + 1);
+  }
+
   function confirmReset() {
     if (!resetTarget) return;
     onReset(resetTarget.pixelId);
@@ -99,7 +105,7 @@ export default function PixelsTable({
           </span>
         </h2>
         <button
-          onClick={onRefresh}
+          onClick={handleRefresh}
           title="Refresh"
           className="flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
         >
@@ -135,6 +141,7 @@ export default function PixelsTable({
                     copiedBadgeId={copiedBadgeId}
                     badgeTheme={badgeTheme}
                     previewRev={previewRev}
+                    refreshToken={refreshTick}
                     onCopyUrl={copyUrl}
                     onCopyBadge={copyBadge}
                     onBadgeThemeChange={changeBadgeTheme}
@@ -219,6 +226,7 @@ function FragmentRow({
   copiedBadgeId,
   badgeTheme,
   previewRev,
+  refreshToken,
   onCopyUrl,
   onCopyBadge,
   onBadgeThemeChange,
@@ -232,6 +240,7 @@ function FragmentRow({
   copiedBadgeId: string | null;
   badgeTheme: ViewsImageTheme;
   previewRev: number;
+  refreshToken: number;
   onCopyUrl: (pixelId: string) => void;
   onCopyBadge: (pixelId: string) => void;
   onBadgeThemeChange: (theme: ViewsImageTheme) => void;
@@ -375,11 +384,11 @@ function FragmentRow({
               <div className="mt-2 flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element -- dynamic SVG badge from the views-image API */}
                 <img
-                  src={`${viewsImageUrl(pixel.pixelId, badgeTheme)}&t=${previewRev}`}
+                  src={`${viewsImageUrl(pixel.pixelId, badgeTheme)}&t=${previewRev}-${refreshToken}`}
                   alt="View-count badge"
                   className="h-7 shrink-0 rounded-full border border-neutral-200 dark:border-neutral-700"
                 />
-                <div className="min-w-0 flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-1.5 font-mono text-xs text-neutral-700 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-300">
+                <div className="w-0 min-w-0 flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-1.5 font-mono text-xs text-neutral-700 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-300">
                   {viewsImageUrl(pixel.pixelId, badgeTheme)}
                 </div>
                 <button
@@ -402,7 +411,10 @@ function FragmentRow({
                 </button>
               </div>
             </div>
-            <ViewsAnalytics pixelId={pixel.pixelId} />
+            <ViewsAnalytics
+              pixelId={pixel.pixelId}
+              refreshToken={refreshToken}
+            />
           </td>
         </tr>
       )}

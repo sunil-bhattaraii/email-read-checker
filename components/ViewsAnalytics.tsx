@@ -42,7 +42,13 @@ function formatDay(d: string): string {
   });
 }
 
-export default function ViewsAnalytics({ pixelId }: { pixelId: string }) {
+export default function ViewsAnalytics({
+  pixelId,
+  refreshToken = 0,
+}: {
+  pixelId: string;
+  refreshToken?: number;
+}) {
   const [data, setData] = useState<Series | null>(null);
   const [failed, setFailed] = useState(false);
   const [range, setRange] = useState<Range>("90d");
@@ -72,7 +78,7 @@ export default function ViewsAnalytics({ pixelId }: { pixelId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [pixelId]);
+  }, [pixelId, refreshToken]);
 
   const points = !data
     ? []

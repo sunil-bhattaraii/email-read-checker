@@ -59,7 +59,7 @@ export default function PixelResult({ url }: { url: string }) {
           : "Copy the counter and paste it where you want to track views."}
       </p>
       <div className="mt-2 flex items-stretch gap-2">
-        <div className="flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-300">
+        <div className="w-0 min-w-0 flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-300">
           {value}
         </div>
         <button
