@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/db";
 import { Pixel } from "@/models/Pixel";
+import { ViewLock } from "@/models/ViewLock";
 import { getSessionUser } from "@/lib/auth";
 
 export async function DELETE(
@@ -16,6 +17,7 @@ export async function DELETE(
   if (result.deletedCount === 0) {
     return Response.json({ error: "Pixel not found." }, { status: 404 });
   }
+  await ViewLock.deleteMany({ pixelId: id }).exec();
   return Response.json({ ok: true });
 }
 
@@ -36,5 +38,6 @@ export async function PATCH(
   if (result.matchedCount === 0) {
     return Response.json({ error: "Pixel not found." }, { status: 404 });
   }
+  await ViewLock.deleteMany({ pixelId: id }).exec();
   return Response.json({ ok: true });
 }

@@ -1,8 +1,10 @@
 import { NextRequest } from "next/server";
 import { connectDB } from "@/lib/db";
 import { Pixel } from "@/models/Pixel";
+import { ViewLock } from "@/models/ViewLock";
 import { getSessionUser, SESSION_COOKIE } from "@/lib/auth";
 import { GUEST_OWNED_COOKIE } from "@/lib/guest";
+import { getClientIp, hashIp, VIEW_WINDOW_MS } from "@/lib/ip";
 
 const TRANSPARENT_GIF = Buffer.from(
   "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
@@ -17,7 +19,7 @@ export async function GET(
   try {
     await connectDB({ timeoutMS: 2000 });
     const skip = await shouldSkipCount(req, id);
-    if (!skip) {
+    if (!skip && (await shouldCountView(req, id))) {
       await Pixel.findOneAndUpdate(
         { pixelId: id },
         {
@@ -49,4 +51,32 @@ async function shouldSkipCount(req: NextRequest, pixelId: string) {
   if (!user) return false;
   const pixel = await Pixel.findOne({ pixelId }).select("user").lean().exec();
   return Boolean(pixel && String(pixel.user) === user.id);
+}
+
+async function shouldCountView(
+  req: NextRequest,
+  pixelId: string
+): Promise<boolean> {
+  const ip = getClientIp(req);
+  if (!ip) return true;
+
+  const now = new Date();
+  const key = `${pixelId}:${hashIp(ip)}`;
+  const lock = await ViewLock.findOne({ key })
+    .select("lastCountedAt")
+    .lean()
+    .exec();
+  if (
+    lock &&
+    now.getTime() - new Date(lock.lastCountedAt).getTime() < VIEW_WINDOW_MS
+  ) {
+    return false;
+  }
+
+  await ViewLock.updateOne(
+    { key },
+    { $set: { pixelId, lastCountedAt: now } },
+    { upsert: true }
+  ).exec();
+  return true;
 }
