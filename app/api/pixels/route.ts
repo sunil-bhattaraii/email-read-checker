@@ -1,9 +1,8 @@
-import { NextRequest, after } from "next/server";
+import { NextRequest } from "next/server";
 import { randomBytes } from "node:crypto";
 import { connectDB } from "@/lib/db";
 import { Pixel } from "@/models/Pixel";
 import { getSessionUser } from "@/lib/auth";
-import { maybeFlush } from "@/lib/view-buffer";
 import type { Pixel as PixelType } from "@/lib/types";
 
 function serializePixel(pixel: {
@@ -36,9 +35,6 @@ export async function GET() {
   if (!user) {
     return Response.json({ error: "Unauthorized." }, { status: 401 });
   }
-  after(() => {
-    maybeFlush().catch(() => {});
-  });
   const pixels = await Pixel.find({ user: user.id })
     .sort({ createdAt: -1 })
     .select("pixelId purpose opens lastOpenedAt createdAt")

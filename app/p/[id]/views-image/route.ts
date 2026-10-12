@@ -1,7 +1,6 @@
-import { NextRequest, after } from "next/server";
+import { NextRequest } from "next/server";
 import { connectDB } from "@/lib/db";
 import { Pixel } from "@/models/Pixel";
-import { maybeFlush } from "@/lib/view-buffer";
 import {
   isViewsImageTheme,
   renderViewsImage,
@@ -14,10 +13,6 @@ export async function GET(
   const { id } = await params;
   const themeParam = new URL(req.url).searchParams.get("theme");
   const theme = isViewsImageTheme(themeParam) ? themeParam : "light";
-
-  after(() => {
-    maybeFlush().catch(() => {});
-  });
 
   let views = 0;
   try {

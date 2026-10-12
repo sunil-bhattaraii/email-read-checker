@@ -1,9 +1,7 @@
-import { after } from "next/server";
 import { connectDB } from "@/lib/db";
 import { Pixel } from "@/models/Pixel";
 import { ViewBucket } from "@/models/ViewBucket";
 import { getSessionUser } from "@/lib/auth";
-import { maybeFlush } from "@/lib/view-buffer";
 
 const HOURS = 48;
 const DAYS = 90;
@@ -27,9 +25,6 @@ export async function GET(
   }
 
   const now = new Date();
-  after(() => {
-    maybeFlush().catch(() => {});
-  });
   const startDay = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
   );
