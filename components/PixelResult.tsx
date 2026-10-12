@@ -66,11 +66,7 @@ export default function PixelResult({ url }: { url: string }) {
           type="button"
           onClick={() => setMode(mode === "url" ? "code" : "url")}
           title={mode === "url" ? "Show img code" : "Show URL"}
-          className={`flex items-center justify-center rounded-md border px-3 text-neutral-600 transition-colors ${
-            mode === "code"
-              ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-              : "border-neutral-300 bg-white hover:bg-neutral-100"
-          }`}
+          className="flex items-center justify-center rounded-md border border-neutral-900 bg-white px-3 text-neutral-600 transition-colors hover:bg-neutral-100"
         >
           <Code2 className="h-4 w-4" />
         </button>

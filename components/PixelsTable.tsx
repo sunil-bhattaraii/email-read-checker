@@ -13,6 +13,7 @@ import {
 import type { Pixel } from "@/lib/types";
 import type { ViewsImageTheme } from "@/lib/views-image";
 import PixelResult from "@/components/PixelResult";
+import ViewsAnalytics from "@/components/ViewsAnalytics";
 
 function formatDate(value: string | null): string {
   if (!value) return "Never";
@@ -329,14 +330,14 @@ function FragmentRow({
                 <p className="text-xs font-semibold text-neutral-500">
                   View-count badge
                 </p>
-                <div className="flex rounded-md border border-neutral-300 bg-white p-0.5">
+                <div className="flex rounded-md bg-neutral-100 p-0.5">
                   <button
                     type="button"
                     onClick={() => onBadgeThemeChange("light")}
                     className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
                       badgeTheme === "light"
-                        ? "bg-neutral-900 text-white"
-                        : "text-neutral-600 hover:bg-neutral-100"
+                        ? "bg-white text-neutral-900 shadow-sm"
+                        : "text-neutral-500 hover:text-neutral-900"
                     }`}
                   >
                     Light
@@ -346,8 +347,8 @@ function FragmentRow({
                     onClick={() => onBadgeThemeChange("dark")}
                     className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
                       badgeTheme === "dark"
-                        ? "bg-neutral-900 text-white"
-                        : "text-neutral-600 hover:bg-neutral-100"
+                        ? "bg-white text-neutral-900 shadow-sm"
+                        : "text-neutral-500 hover:text-neutral-900"
                     }`}
                   >
                     Dark
@@ -357,8 +358,8 @@ function FragmentRow({
                     onClick={() => onBadgeThemeChange("neutral")}
                     className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
                       badgeTheme === "neutral"
-                        ? "bg-neutral-900 text-white"
-                        : "text-neutral-600 hover:bg-neutral-100"
+                        ? "bg-white text-neutral-900 shadow-sm"
+                        : "text-neutral-500 hover:text-neutral-900"
                     }`}
                   >
                     Neutral
@@ -379,7 +380,7 @@ function FragmentRow({
                   type="button"
                   onClick={() => onCopyBadge(pixel.pixelId)}
                   title="Copy badge image URL"
-                  className="flex shrink-0 items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-neutral-700"
+                  className="flex shrink-0 items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
                 >
                   {copiedBadgeId === pixel.pixelId ? (
                     <>
@@ -395,6 +396,7 @@ function FragmentRow({
                 </button>
               </div>
             </div>
+            <ViewsAnalytics pixelId={pixel.pixelId} />
           </td>
         </tr>
       )}
