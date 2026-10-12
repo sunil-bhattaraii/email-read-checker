@@ -1,36 +1,33 @@
 # ReadMail
 
-Track when your emails are opened using an invisible 1x1 tracking pixel.
+Track views of anything with a simple, embeddable view counter.
 
 ## Features
 
-- Create tracking pixels with a purpose label so you can recognize them later
-- Copy a pixel and paste it directly into an email message
-- See the open count and the last opened time for each pixel
-- Reset a pixel count after testing, with a confirmation dialog
-- Optional sign in; pixels are saved in your browser until you sign in
-- Guest pixels sync to your account when you sign in
+- Create view counters with a label so you can recognize them later
+- Copy a counter and embed it (as an image) just about anywhere
+- See the view count and the last viewed time for each counter
+- Reset a counter after testing, with a confirmation dialog
+- Optional sign in; counters are saved in your browser until you sign in
+- Guest counters sync to your account when you sign in
 - Footer shows a page visit count, limited to once per hour per browser
 
 ## How it works
 
-Each pixel is a transparent 1x1 image served by the app at a unique URL. When
-an email containing the pixel is opened and the recipient's email client loads
-images, the image request is recorded as an open and the last opened time is
-updated.
+Each counter is a transparent 1x1 image served by the app at a unique URL.
+When the item containing the counter is viewed and the image loads, the request
+is recorded as a view and the last viewed time is updated.
 
 ### Counting behavior
 
-- Every image load is counted. If the same recipient opens an email multiple
-  times, each load adds another open.
-- Viewing your own message also counts as an open. Email clients load images
-  without the app session cookie, so the owner check does not apply there.
-- Only a direct preview of the tracking URL from your own signed-in browser is
-  skipped, so refreshing the pixel URL in the dashboard does not inflate the
-  count.
-- Opens only count when images load. Some email clients block images by
-  default, so the count can be lower than the number of times the email was
-  actually opened.
+- Each view is recorded once per visitor per counter every 5 minutes, based on
+  the visitor's IP address (stored as a salted hash, never the raw IP). Rapid
+  reloads from the same IP do not inflate the count.
+- Viewing your own item also counts unless the request carries your session, so
+  a direct preview of the counter URL from your own signed-in browser is
+  skipped.
+- Views only count when images load. Some clients block images by
+  default, so the count can be lower than the number of actual views.
 
 ## Getting Started
 
@@ -56,12 +53,29 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 ## Usage
 
-1. Type a purpose and click Generate pixel.
-2. Click Copy to copy the 1x1 image, then paste it into your email. You can
-   switch to the plain URL with the code button.
-3. Send the email. Opens and last opened times appear in the table.
-4. To test a pixel, open its URL in a different browser or in an incognito
+1. Type a label and click Generate counter.
+2. Click Copy to copy the 1x1 image, then embed it wherever you want to track
+   views. You can switch to the plain URL with the code button.
+3. Watch the view counts and last viewed times appear in the table.
+4. To test a counter, open its URL in a different browser or in an incognito
    window, then reset the count when you are done.
+
+## Badges
+
+Each counter also exposes a dynamic image showing its view count in a rounded
+capsule with an eye icon. Embed it anywhere that loads images:
+
+```html
+<img src="https://your-app.example/p/COUNTER_ID/views-image" alt="View count" />
+```
+
+Pass `?theme=` to switch the color scheme:
+
+```html
+<img src="https://your-app.example/p/COUNTER_ID/views-image?theme=dark" alt="View count" />
+```
+
+The badge is served without caching, so it always shows the current count.
 
 ## Accounts
 
@@ -77,8 +91,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 ## Reset
 
-Each pixel row has a reset button. It opens a confirmation dialog, and on
-confirmation sets the open count back to 0 and clears the last opened time.
+Each counter row has a reset button. It opens a confirmation dialog, and on
+confirmation sets the view count back to 0, clears the last viewed time, and
+removes the recent-visitor locks so the counter can be re-tested immediately.
 
 ## Production
 
