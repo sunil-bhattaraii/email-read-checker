@@ -1,4 +1,4 @@
-export type ViewsImageTheme = "light" | "dark";
+export type ViewsImageTheme = "light" | "dark" | "neutral";
 
 const THEMES: Record<
   ViewsImageTheme,
@@ -16,12 +16,18 @@ const THEMES: Record<
     icon: "#818cf8",
     text: "#f9fafb",
   },
+  neutral: {
+    background: "#3f3f46",
+    border: "#52525b",
+    icon: "#fafafa",
+    text: "#fafafa",
+  },
 };
 
 export function isViewsImageTheme(
   value: string | null
 ): value is ViewsImageTheme {
-  return value === "light" || value === "dark";
+  return value === "light" || value === "dark" || value === "neutral";
 }
 
 function formatCount(views: number): string {

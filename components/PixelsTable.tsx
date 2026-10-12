@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import type { Pixel } from "@/lib/types";
+import type { ViewsImageTheme } from "@/lib/views-image";
 import PixelResult from "@/components/PixelResult";
 
 function formatDate(value: string | null): string {
@@ -24,7 +25,7 @@ function pixelUrl(pixelId: string): string {
 
 function viewsImageUrl(
   pixelId: string,
-  theme: "light" | "dark" = "light"
+  theme: ViewsImageTheme = "light"
 ): string {
   return `${window.location.origin}/p/${pixelId}/views-image?theme=${theme}`;
 }
@@ -45,7 +46,7 @@ export default function PixelsTable({
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [copiedBadgeId, setCopiedBadgeId] = useState<string | null>(null);
-  const [badgeTheme, setBadgeTheme] = useState<"light" | "dark">("light");
+  const [badgeTheme, setBadgeTheme] = useState<ViewsImageTheme>("light");
   const [previewRev, setPreviewRev] = useState(0);
   const [resetTarget, setResetTarget] = useState<Pixel | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Pixel | null>(null);
@@ -70,7 +71,7 @@ export default function PixelsTable({
     });
   }
 
-  function changeBadgeTheme(theme: "light" | "dark") {
+  function changeBadgeTheme(theme: ViewsImageTheme) {
     setBadgeTheme(theme);
     setPreviewRev((r) => r + 1);
   }
@@ -228,11 +229,11 @@ function FragmentRow({
   expanded: boolean;
   copiedId: string | null;
   copiedBadgeId: string | null;
-  badgeTheme: "light" | "dark";
+  badgeTheme: ViewsImageTheme;
   previewRev: number;
   onCopyUrl: (pixelId: string) => void;
   onCopyBadge: (pixelId: string) => void;
-  onBadgeThemeChange: (theme: "light" | "dark") => void;
+  onBadgeThemeChange: (theme: ViewsImageTheme) => void;
   onToggle: (pixelId: string) => void;
   onResetRequest: (pixel: Pixel) => void;
   onDeleteRequest: (pixel: Pixel) => void;
@@ -350,6 +351,17 @@ function FragmentRow({
                     }`}
                   >
                     Dark
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onBadgeThemeChange("neutral")}
+                    className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
+                      badgeTheme === "neutral"
+                        ? "bg-neutral-900 text-white"
+                        : "text-neutral-600 hover:bg-neutral-100"
+                    }`}
+                  >
+                    Neutral
                   </button>
                 </div>
               </div>

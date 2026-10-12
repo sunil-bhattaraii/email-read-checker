@@ -69,7 +69,9 @@ capsule with an eye icon. Embed it anywhere that loads images:
 <img src="https://your-app.example/p/COUNTER_ID/views-image" alt="View count" />
 ```
 
-Pass `?theme=` to switch the color scheme:
+Pass `?theme=` to switch the color scheme. `light`, `dark`, and `neutral`
+are supported; `neutral` uses a mid-gray capsule that reads well on both light
+and dark backgrounds:
 
 ```html
 <img src="https://your-app.example/p/COUNTER_ID/views-image?theme=dark" alt="View count" />
