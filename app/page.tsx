@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "ReadMail",
   description:
-    "Track when your emails are opened with an invisible tracking pixel. Create a pixel, paste it into an email, and watch the open count grow.",
+    "Track views of anything with an invisible 1x1 tracking counter.",
   alternates: {
     canonical: "/",
   },

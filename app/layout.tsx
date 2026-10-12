@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s | ReadMail",
   },
   description:
-    "Track when your emails are opened with an invisible tracking pixel.",
+    "Track views of anything with a simple embeddable counter.",
   applicationName: "ReadMail",
   manifest: "/assets/favicons/site.webmanifest",
   robots: {
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "ReadMail",
     description:
-      "Track when your emails are opened with an invisible tracking pixel.",
+      "Track views of anything with a simple embeddable counter.",
     siteName: "ReadMail",
     type: "website",
     locale: "en_US",
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "ReadMail",
     description:
-      "Track when your emails are opened with an invisible tracking pixel.",
+      "Track views of anything with a simple embeddable counter.",
     images: ["/assets/readmail-logo.png"],
   },
 };
@@ -89,7 +89,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     name: "ReadMail",
     url: siteUrl,
     description:
-      "Track when your emails are opened with an invisible tracking pixel.",
+      "Track views of anything with a simple embeddable counter.",
   };
   return (
     <html

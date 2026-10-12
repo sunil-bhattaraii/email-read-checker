@@ -132,7 +132,7 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
       });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error ?? "Failed to generate pixel.");
+        throw new Error(data.error ?? "Failed to generate counter.");
       }
       setPixels((prev) => [data.pixel, ...prev]);
       return { pixel: data.pixel, url: data.url };
@@ -223,7 +223,7 @@ export default function Dashboard({ user }: { user: SessionUser | null }) {
               <p className="mt-0.5 ml-12 text-sm text-neutral-500">
                 {user
                   ? `Signed in as ${user.username}`
-                  : 'Pixels are saved in this browser until you sign in.'}
+                  : 'Counters are saved in this browser until you sign in.'}
               </p>
         </div>
         {user ? (

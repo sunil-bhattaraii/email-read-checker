@@ -55,8 +55,8 @@ export default function PixelResult({ url }: { url: string }) {
     <div className="relative">
       <p className="text-sm text-neutral-500">
         {mode === "url"
-          ? "Copy the URL to use in an image tag in your email."
-          : "Copy the pixel and paste it into your email."}
+          ? "Copy the URL to use in an image tag."
+          : "Copy the counter and paste it where you want to track views."}
       </p>
       <div className="mt-2 flex items-stretch gap-2">
         <div className="flex-1 truncate rounded-md border border-neutral-300 bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700">
@@ -77,7 +77,7 @@ export default function PixelResult({ url }: { url: string }) {
         <button
           type="button"
           onClick={copy}
-          title={mode === "url" ? "Copy URL" : "Copy pixel"}
+          title={mode === "url" ? "Copy URL" : "Copy counter"}
           className="flex items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-neutral-700"
         >
           {copied ? (

@@ -32,7 +32,7 @@ export default function GeneratePanel({
       setResult({ url });
       setPurpose("");
     } catch {
-      setError("Failed to generate pixel.");
+      setError("Failed to generate counter.");
     } finally {
       setBusy(false);
     }
@@ -40,9 +40,9 @@ export default function GeneratePanel({
 
   return (
     <section className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-      <h2 className="text-sm font-semibold text-neutral-900">Create a pixel</h2>
+      <h2 className="text-sm font-semibold text-neutral-900">Create a counter</h2>
       <p className="mt-1 text-sm text-neutral-500">
-        Give the pixel a purpose so you can recognize it later.
+        Give the counter a label so you can recognize it later.
       </p>
       <form onSubmit={generate} className="mt-4 flex flex-col gap-3 sm:flex-row">
         <input
@@ -50,7 +50,7 @@ export default function GeneratePanel({
           type="text"
           value={purpose}
           onChange={(e) => setPurpose(e.target.value)}
-          placeholder="e.g. Newsletter issue 12, welcome email"
+          placeholder="e.g. Landing page, pricing page, portfolio item"
           className="flex-1 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
         />
         <button
@@ -63,7 +63,7 @@ export default function GeneratePanel({
           ) : (
             <Sparkles className="h-4 w-4" />
           )}
-          Generate pixel
+          Generate counter
         </button>
       </form>
       {error && (

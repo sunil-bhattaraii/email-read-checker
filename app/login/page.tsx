@@ -25,7 +25,7 @@ export default async function LoginPage() {
       <div className="w-full max-w-sm">
         <LoginForm />
         <p className="mt-4 text-center text-xs text-neutral-500">
-          Pixels you made without signing in are added to your account when you
+          Counters you made without signing in are added to your account when you
           sign in.
         </p>
       </div>
